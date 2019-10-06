@@ -1,0 +1,20 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0; border: 0;
+  font: inherit;
+}
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  font-family: "Roboto";
+}
+
+// NOTE: this is the root "div" of storybook
+#root {
+  height: 100%;
+}
+
+@import './variables.scss';
+@import './app.scss';
