@@ -1,0 +1,55 @@
+#modal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+
+  &.visible {
+    visibility: initial;
+  }
+
+  &.fadeIn {
+    animation: fade-in-keyframes 0.1s ease-in;
+    animation-fill-mode: forwards;
+
+    @keyframes fade-in-keyframes {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+
+  &.fadeOut {
+    animation: fade-out-keyframes 0.1s ease-in;
+    animation-fill-mode: forwards;
+    @keyframes fade-out-keyframes {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  }
+
+  #modal-inner {
+    width: 80%;
+    height: 90%;
+    left: 10%;
+    top: 5%;
+    background: white;
+    box-shadow: 0 0px 16px 0px rgba(0, 0, 0, 0.4);
+
+    position: relative;
+    #close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      cursor: pointer;
+      z-index: 2;
+
+      i {
+        font-size: 22px;
+        color: $grey-7
+      }
+    }
+  }
+}

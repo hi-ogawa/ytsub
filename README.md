@@ -1,13 +1,25 @@
 TODO
 
-- Navigation
-  - select video
-  - select subtitle
 - WebShare target
 - AnkiTube feature
   - deck, rate
-- interaction
+- More Interaction
   - scroll subtitle to follow video
+
+Tips
+
+```
+# Development
+yarn install
+yarn run storybook # then play with "App > With Data"
+
+# Running src/utils.js from Node Console (e.g. getYoutubeSubtitleInfo)
+yarn run node-utils
+node --experimental-repl-await
+> global.fetch = require('node-fetch')
+> const utils = require('./src/utils.node.js')
+> await utils.getYoutubeSubtitleInfo('bVlFUcVNErs')
+```
 
 References
 

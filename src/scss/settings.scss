@@ -1,0 +1,103 @@
+#settings-container {
+  padding: 25px;
+
+  h1 {
+    margin-bottom: 20px;
+    font-weight: 300;
+    font-size: 22px;
+  }
+
+  .video-input {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-weight: 500;
+      color: #a5a5a5;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .input-grp {
+      display: flex;
+      input {
+        flex: 1 1 auto;
+        min-width: 0px;
+        padding: 4px 8px;
+        border: 1px solid #aaa;
+        font-weight: 300;
+      }
+      button {
+        flex: 0 1 25px;
+        padding: 0 8px;
+        background: #777;
+        color: white;
+
+        // Centerize icon
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        @include spinner-container('.loading')
+      }
+    }
+  }
+
+  .language-select {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    label {
+      font-weight: 500;
+      color: #a5a5a5;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    select {
+      padding: 4px 8px;
+      border: 1px solid #aaa;
+      font-weight: 300;
+      background: white;
+
+      &:not(:last-child) {
+        margin-bottom: 7px;
+      }
+      &[disabled] {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .play-action {
+    display: flex;
+
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      flex: 1 0 auto;
+      padding: 3px;
+      background: #777;
+      box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.3);
+      color: white;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      @include spinner-container('.loading');
+
+      &[disabled] {
+        color: #efefef;
+        cursor: not-allowed;
+      }
+
+      i {
+        // Centerize label
+        margin-right: -12px;
+      }
+    }
+  }
+}

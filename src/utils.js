@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
 import { interval } from 'rxjs';
@@ -12,6 +13,28 @@ export const ASSERT = (bool, message) => bool || window.alert(message)
 export const stopProp = (f) => (e) => {
   e.stopPropagation();
   return f(e);
+}
+
+// Inspired by "useMutation" from apollo-client
+export const useLoader = (origF /* promise returning function */) => {
+  const [state, setState] = useState({ loading: false, error: null });
+  const newF = (...args) => {
+    setState({ loading: true, error: null });
+    return origF(...args).then(
+      (val) => {
+        // NOTE:
+        // If "origF" caused the component to be unmounted,
+        // then this "setState" leads to warning.
+        setState({ loading: false, error: null });
+        return { value: val, state };
+      },
+      (err) => {
+        setState({ loading: false, error: err });
+        return { value: null, state };
+      }
+    );
+  }
+  return [ newF, state ];
 }
 
 //
@@ -51,6 +74,9 @@ export class Player {
       this.player = new this.YT.Player(node, options);
     });
   }
+  destroy() {
+    this.player.destroy();
+  }
 
   // Watch events by ourselves (Imitating MediaElement)
   // cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
@@ -77,11 +103,95 @@ export class Player {
   playVideo() {
     this.player.playVideo();
   }
+  setVideo(videoId) {
+    this.player.cueVideoById(videoId);
+  }
 }
 
 //
-// Parsing subtitle data
+// Parsing Youtube Data
 //
+
+export const parseVideoId = (value) => {
+  let videoId;
+  if (value.length == 11) {
+    videoId = value;
+  } else if (value.match(/youtube\.com|youtu\.be/)) {
+    let url;
+    try {
+      url = new URL(value);
+      if (url.hostname == 'youtu.be') {
+        videoId = url.pathname.substr(1);
+      } else {
+        videoId = url.search.match(/v=(.{11})/)[1];
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  }
+  return videoId;
+}
+
+export const findPreferredSubtitles = (subtitleInfo, lang1, lang2) => {
+  const { tracks } = subtitleInfo;
+
+  let subtitle1
+  subtitle1 = _.find(tracks, { vssId: `.${lang1}` }); // Look for manually made subtitle
+  if (!subtitle1) {
+    subtitle1 = _.find(tracks, { vssId: `a.${lang1}` }); // Otherwise, use machine speech recognition
+  }
+  if (!subtitle1) {
+    return { subtitleUrl1: null, subtitleUrl2: null };
+  }
+  const subtitleUrl1 = subtitle1.url;
+
+  let subtitle2 = _.find(tracks, { vssId: `.${lang2}` }); // Look for manually made subtitle
+  let subtitleUrl2 = _.get(subtitle2, 'url');
+  if (!subtitleUrl2) {
+    subtitleUrl2 = `${subtitleUrl1}&tlang=${lang2}`; // Otherwise, use machine translation
+  }
+  return  { subtitleUrl1, subtitleUrl2 }
+};
+
+
+const extractSubtitleInfo = (content) => {
+  const mobj = content.match(/;ytplayer\.config\s*=\s*({.+?});ytplayer/);
+  const config = JSON.parse(mobj[1]);
+  const player_response = JSON.parse(config.args.player_response);
+  let tracks = player_response.captions.playerCaptionsTracklistRenderer.captionTracks;
+  let translations = player_response.captions.playerCaptionsTracklistRenderer.translationLanguages;
+  return {
+    tracks: tracks.map(t => ({
+      name: t.name.simpleText,
+      url: `${t.baseUrl}&fmt=ttml`,
+      vssId: t.vssId,
+    })),
+    translations: translations.map(t => ({
+      name: t.languageName.simpleText,
+      code: t.languageCode
+    }))
+  };
+}
+
+// cf.
+const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbwlRhtH1THiHcTY0hbZtcMd1K_ucndHfa-8iugHJMgaKjDY2HqoJbMAACMIITNeMNpZ/exec';
+const fetchViaProxy = (url, { headers }) => {
+  const _url = encodeURIComponent(url);
+  const _jsonParams = encodeURIComponent(JSON.stringify({ headers }));
+  const proxyUrl = `${PROXY_BASE_URL}?url=${_url}&jsonParams=${_jsonParams}`;
+  return fetch(proxyUrl);
+}
+
+export const getYoutubeSubtitleInfo = (id) =>
+  fetchViaProxy(`https://www.youtube.com/watch?v=${id}`, { headers: { 'Accept-Language': 'en-US,en' } })
+  .then(resp => resp.text())
+  .then(extractSubtitleInfo);
+
+export const getEntries = async (subtitleUrl1, subtitleUrl2) => {
+  const resps = await Promise.all([subtitleUrl1, subtitleUrl2].map(url => fetch(url)));
+  const [ttml1, ttml2] = await Promise.all(resps.map(r => r.text()));
+  return createEntries(ttml1, ttml2);
+}
 
 export const createEntries = (ttml1, ttml2) => {
   const entries1 = ttmlToEntries(ttml1);

@@ -15,6 +15,7 @@
   justify-content: center;
   position: relative;
   box-shadow: 0 1px 8px $grey-3;
+  z-index: 0; // otherwise iframe is going to cover modal
 
   // Usual aspect-ratio fixing tricks
   #player-aspect-ratio-fixer1 {
@@ -152,7 +153,6 @@
   }
 }
 
-// TODO: Not implemented
 #nav {
   flex: 0 0 28px;
   display: flex;
@@ -161,9 +161,9 @@
   position: relative;
   box-shadow: 0 -1px 6px $grey-3;
 
-  > a {
-    text-decoration: none;
-    color: initial;
+  i {
+    color: $grey-7;
+    font-size: 20px;
   }
   > * {
     flex: 1 0 19%; // Subtract a bit to accomodate "border-right"
@@ -180,7 +180,7 @@
       border-right: 1px solid $grey-3;
     }
 
-    &[disabled] {
+    &.disabled {
       cursor: not-allowed;
       color: $grey-5;
     }

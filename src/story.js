@@ -1,35 +1,106 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import CN from 'classnames';
 import { storiesOf } from '@storybook/react';
-import { Button } from '@storybook/react/demo';
 
 //
-// Just keep tutorial example here
+// Support async storyFn (I thought I need it but not used now)
 //
-const wrapButton = storyFn => (
-  <div id="story-root">{storyFn()}</div>
-)
-storiesOf('Button', module)
-.addDecorator(wrapButton)
-.add('With Text', () => <Button>Hello Button</Button>)
-.add('With Emoji', () => <Button><span role="img" aria-label="so cool">😀 😎 👍 💯</span></Button>)
-
+// Usage:
+//   storiesOf('Some Component', module)
+//   .addDecorator((storyFn) => <AsyncStoryFnWrapper storyFn={storyFn} />)
+//
+const AsyncStoryFnWrapper = ({ storyFn }) => {
+  const [children, setChildren] = useState(null);
+  useEffect(() => {
+    const story = storyFn();
+    if (story instanceof Promise) {
+      story.then(
+        setChildren,
+        (e) => { setChildren('storyFn failed.'); window.alert(e.message); }
+      );
+    } else {
+      setChildren(story);
+    }
+  }, []);
+  return <>{ children || 'Loading...' }</>;
+}
 
 //
 // App
 //
-
 import 'style-loader!css-loader!sass-loader!./scss/index.scss'
-import App from './components/app.js';
-
+import App from './components/App.js';
 import { createEntries } from './utils.js';
-import ttml1 from 'raw-loader!./fixtures/ru.ttml';
-import ttml2 from 'raw-loader!./fixtures/en.ttml';
 
 storiesOf('App', module)
-.add('Default', () => {
-  const props = {
-    videoId: 'VsPE2ByYYyg',
-    entries: createEntries(ttml1, ttml2),
-  };
+.add('With Data', () => {
+  const ttml1 = require('raw-loader!./fixtures/ru.ttml').default;
+  const ttml2 = require('raw-loader!./fixtures/en.ttml').default;
+  // cf. https://www.youtube.com/watch?v=VsPE2ByYYyg
+  const videoId = 'VsPE2ByYYyg';
+  const entries = createEntries(ttml1, ttml2);
+  const props = { videoId, entries };
   return <App {...props} />;
+})
+.add('Empty', () => {
+  const videoId = null;
+  const entries = [];
+  const props = { videoId, entries };
+  return <App {...props} />;
+});
+
+//
+// Settings (aka Load New Video)
+//
+import Settings from './components/Settings.js';
+
+storiesOf('Settings', module)
+.add('Default', () => {
+  // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
+  const videoId = 'bVlFUcVNErs'
+  const props = {
+    defaultVideoId: videoId,
+    setPlayerData: console.log,
+  };
+  return <Settings {...props} />;
+});
+
+//
+// @spinner example
+//
+
+storiesOf('@spinner-container', module)
+.add('Default', () => {
+  const C = () => {
+    const [loading, setLoading] = useState(false);
+    return (
+      <div className='spinner-container-mixin-test'>
+        <button className={CN({ loading })} onClick={() => setLoading(!loading)}>
+          <span>SUBMIT</span>
+        </button>
+      </div>
+    );
+  }
+  return <C />;
+});
+
+//
+// useLoader + @spinner-container example
+//
+import { useLoader } from './utils.js';
+
+storiesOf('useLoader', module)
+.add('Default', () => {
+  const C = () => {
+    const doSomething = () => new Promise(r => window.setTimeout(r, 1000));
+    const [ _doSomething, { loading } ] = useLoader(doSomething);
+    return (
+      <div className='spinner-container-mixin-test'>
+        <button className={CN({ loading })} onClick={_doSomething}>
+          <span>SUBMIT</span>
+        </button>
+      </div>
+    );
+  }
+  return <C />;
 });
