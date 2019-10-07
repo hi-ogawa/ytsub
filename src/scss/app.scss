@@ -6,6 +6,8 @@
   max-width: $bp-md;
   margin: 0 auto;
   overflow-x: hidden; // cut out #player-container's box-shadow
+
+  position: relative; // for modal's position: absolute (TODO: modal is going to be outside of app (aka viewer))
 }
 
 #player-container {

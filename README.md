@@ -1,3 +1,7 @@
+Youtube Subtitles Viewer
+
+https://ytsub.hiogawa.now.sh
+
 TODO
 
 - WebShare target
@@ -11,10 +15,13 @@ Tips
 ```
 # Development
 yarn install
-yarn run storybook # then play with "App > With Data"
+npm run storybook # then play with "App > With Data"
 
-# Running src/utils.js from Node Console (e.g. getYoutubeSubtitleInfo)
-yarn run node-utils
+# Deployment
+npm run build:deploy
+
+# Running src/utils.js from NodeJS console (e.g. getYoutubeSubtitleInfo)
+npm run node-utils
 node --experimental-repl-await
 > global.fetch = require('node-fetch')
 > const utils = require('./src/utils.node.js')
