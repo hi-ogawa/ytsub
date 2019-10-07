@@ -173,8 +173,8 @@ const extractSubtitleInfo = (content) => {
   };
 }
 
-// cf.
-const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbwlRhtH1THiHcTY0hbZtcMd1K_ucndHfa-8iugHJMgaKjDY2HqoJbMAACMIITNeMNpZ/exec';
+// cf. https://github.com/hi-ogawa/apps-script-proxy
+const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbwXJFqrRvPjvkNY5q1DNsIQuEG3hZVtUb_OFMJzhaYmxlw9IAN9qT-_Tk7MpruNdkWu/exec';
 const fetchViaProxy = (url, { headers }) => {
   const _url = encodeURIComponent(url);
   const _jsonParams = encodeURIComponent(JSON.stringify({ headers }));

@@ -33,3 +33,4 @@ References
 - https://jsdoc.app/tags-type.html
 - https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html
 - https://developers.google.com/youtube/iframe_api_reference
+- https://github.com/hi-ogawa/apps-script-proxy
