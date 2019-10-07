@@ -3,7 +3,7 @@
   "scripts": {
     "storybook": "start-storybook -p 9090",
     "node-utils": "webpack ./src/utils.js --mode=development --output-library-target commonjs -o src/utils.node.js",
-    "build": "webpack --progress --config ./webpack.config.production.js",
+    "build": "rm -r build && webpack --progress --config ./webpack.config.production.js",
     "deploy": "now ./build -A ../now.json --debug",
     "build:deploy": "npm run build && npm run deploy",
     "build:demo": "http-server build"
@@ -16,6 +16,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",
     "http-server": "^0.11.1",
+    "immutability-helper": "^3.0.1",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",

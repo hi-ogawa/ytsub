@@ -36,8 +36,15 @@ storiesOf('Root', module)
 .add('Default', () => {
   return <Root />;
 })
-.add('TODO: From WebShare', () => {
-  return 'TODO';
+.add('From WebShare', () => {
+  // NOTE: Replaced state won't be cleared when story is changed,
+  // so it needs to manually refresh browser if you go "Root > Default" story.
+  const sharedUrl = 'https://www.youtube.com/watch?v=VsPE2ByYYyg';
+  window.history.replaceState(
+      {},
+      window.document.title,
+      window.location.href + `&share_target_text=${encodeURIComponent(sharedUrl)}`);
+  return <Root />;
 });
 
 //
@@ -77,6 +84,13 @@ import Settings from './components/Settings.js';
 
 storiesOf('Settings', module)
 .add('Default', () => {
+  const props = {
+    defaultVideoId: null,
+    setPlayerData: console.log,
+  };
+  return <Settings {...props} />;
+})
+.add('With Data', () => {
   // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
   const videoId = 'bVlFUcVNErs'
   const props = {
@@ -85,6 +99,7 @@ storiesOf('Settings', module)
   };
   return <Settings {...props} />;
 });
+
 
 //
 // @spinner example

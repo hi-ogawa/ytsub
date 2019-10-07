@@ -11,7 +11,8 @@ const Modal= ({ content, setContent }) => {
     if (content) {
       setVisible(true);
     } else {
-      window.setTimeout(() => setVisible(false), 300);
+      const timeoutId = window.setTimeout(() => setVisible(false), 300);
+      return () => window.clearTimeout(timeoutId);
     }
   }, [ content ]);
 

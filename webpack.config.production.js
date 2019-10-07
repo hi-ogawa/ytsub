@@ -23,6 +23,7 @@ module.exports = {
     new CopyPlugin([
       { from: 'src/assets/*.png', to: outputPath, flatten: true },
       { from: 'src/assets/manifest.json', to: outputPath, flatten: true },
+      { from: 'src/serviceWorker.js', to: outputPath, flatten: true },
     ])
   ],
   module: {

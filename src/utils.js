@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
 import { interval } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
+import update from 'immutability-helper';
 
 //
 // Misc utility
@@ -35,6 +36,13 @@ export const useLoader = (origF /* promise returning function */) => {
     );
   }
   return [ newF, state ];
+}
+
+// cf. https://github.com/kolodny/immutability-helper
+export const useUpdate = (initialState) => {
+  const [state, setState] = useState(initialState);
+  const updateState = (command) => setState(update(state, command));
+  return [state, updateState];
 }
 
 //

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import App from './App.js';
 import Modal from './Modal.js';
@@ -22,10 +22,17 @@ const Root = () => {
   }
 
   const actions = {
-    showSettings: () => {
-      setModalContent(<Settings {...{ setPlayerData }}/>)
+    showSettings: (defaultVideoId = '') => {
+      setModalContent(<Settings {...{ defaultVideoId, setPlayerData }}/>)
     }
   }
+
+  // On mount
+  useEffect(() => {
+    // Web Share Target handler (cf. https://wicg.github.io/web-share-target/level-2/)
+    const sharedUrl = (new URL(window.location)).searchParams.get('share_target_text');
+    actions.showSettings(sharedUrl);
+  }, []);
 
   return (
     <>

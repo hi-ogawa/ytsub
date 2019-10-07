@@ -6,6 +6,15 @@ import CN from 'classnames';
 import '../typedef.js';
 import { Player, secondToTimestamp, stopProp } from '../utils.js'
 
+//
+// Dom Tree (cf. app.scss)
+// - #app
+//   - #player-container
+//   - #subtitle-and-nav-container
+//     - #subtitle-container
+//     - #nav
+//
+
 /**
  * @param {{ videoId: (string|null), entries: [Entry], actions: Record<string,function> }} props
  * @return {JSX.Element}

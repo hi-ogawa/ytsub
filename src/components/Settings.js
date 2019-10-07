@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CN from 'classnames';
 import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries, useLoader } from '../utils.js';
 
 const Settings = ({
   setPlayerData,
-  defaultVideoId = '',
+  defaultVideoId,
   preference = { lang1: 'ru', lang2: 'en' }, // TODO: Implement preference system
 }) => {
   const [state, setState] = useState({
-    videoId: defaultVideoId,
+    videoId: defaultVideoId || '',
     subtitleInfo: { tracks: [], translations: [] },
     subtitleUrl1: '',
     subtitleUrl2: ''
@@ -42,6 +42,14 @@ const Settings = ({
     }
     setPlayerData(state.videoId, entries);
   }
+
+  // On mount
+  useEffect(() => {
+    // If defaultVideoId is given, then automatically trigger loading subtitleInfo.
+    if (defaultVideoId) {
+      videoInputHandler();
+    }
+  }, [])
 
   return (
     <div id='settings-container'>

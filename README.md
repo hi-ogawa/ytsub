@@ -4,12 +4,10 @@ https://ytsub.hiogawa.now.sh
 
 TODO
 
-- WebShare target
-  - Load video based on url query
-- More features
-  - Ankitube (deck, rate, etc...)
-  - History
-  - Scroll subtitle panel to follow video
+- Language preference
+- History
+- Ankitube (deck, rate, etc...)
+- Scroll subtitle panel to follow video
 
 Tips
 
