@@ -1,0 +1,70 @@
+#language-select-form-container {
+  padding: 25px;
+
+  h1 {
+    margin-bottom: 20px;
+    font-weight: 300;
+    font-size: 22px;
+  }
+
+  .language-select {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    label {
+      font-weight: 500;
+      color: #a5a5a5;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    select {
+      padding: 4px 8px;
+      border: 1px solid #aaa;
+      font-weight: 300;
+      background: white;
+
+      &:not(:last-child) {
+        margin-bottom: 7px;
+      }
+      &[disabled] {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .play-action {
+    display: flex;
+
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      flex: 1 0 auto;
+      padding: 3px;
+      background: #777;
+      box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.3);
+      color: white;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      @include spinner-container('.loading');
+
+      &[disabled] {
+        color: #efefef;
+        cursor: not-allowed;
+      }
+
+      i {
+        // Adjucst a bit
+        position: relative;
+        top: 1px;
+
+        // Centerize "PLAY" label
+        margin-right: -12px;
+      }
+    }
+  }
+}

@@ -72,6 +72,13 @@ const Root = () => {
           actions.update({ $merge: { playerData: value }});
         }
       })();
+    } else {
+      actions.setModal(
+        <NewVideoForm {...{
+          actions,
+          defaultVideoId: null,
+        }} />
+      );
     }
 
     // Restore last state
@@ -86,7 +93,7 @@ const Root = () => {
     );
   }, []);
 
-  // Persist current tree
+  // Persist current state
   useEffect(() => {
     if (state.RESTORE_DONE) {
       localforage.setItem(STORAGE_KEY, _.pick(state, PERSIST_FILTER));
@@ -100,7 +107,7 @@ const Root = () => {
   };
   const appProps = {
     actions,
-    ...state.playerData,
+    playerData: state.playerData
   }
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import CN from 'classnames';
 import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries,
          useLoader, useUpdate } from '../utils.js';
@@ -8,7 +8,7 @@ const NewVideoForm = ({
   defaultVideoId,
   preference = { lang1: 'ru', lang2: 'en' }, // TODO: Implement preference system
 }) => {
-  const [state, _, __, mergeState] = useUpdate({
+  const [state, __, ___, mergeState] = useUpdate({
     videoId: defaultVideoId || '',
     subtitleInfo: { tracks: [], translations: [] },
     subtitleUrl1: '',
@@ -26,7 +26,7 @@ const NewVideoForm = ({
     } else {
       const { value: subtitleInfo, state: { error } } = await _getYoutubeSubtitleInfo(videoId)
       if (error) {
-        console.error(e.message);
+        console.error(error.message);
         window.alert('Unsupported video');
         return false;
       }
@@ -40,7 +40,7 @@ const NewVideoForm = ({
   const playHandler = async () => {
     const { value: entries, state: { error } } = await _getEntries(state.subtitleUrl1, state.subtitleUrl2);
     if (error) {
-      console.error(e.message);
+      console.error(error.message);
       return window.alert('Failed to load subtitles');
     }
     actions.update({ $merge:

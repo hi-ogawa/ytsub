@@ -1,11 +1,12 @@
 // @ts-check
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import _ from 'lodash';
 import CN from 'classnames';
 
 import '../typedef.js';
-import { Player, secondToTimestamp, stopProp } from '../utils.js'
+import { Player, secondToTimestamp, stopProp, useUpdate } from '../utils.js'
 import NewVideoForm from './NewVideoForm.js'
+import LanguageSelectForm from './LanguageSelectForm.js';
 
 //
 // Dom Tree (cf. app.scss)
@@ -17,21 +18,22 @@ import NewVideoForm from './NewVideoForm.js'
 //
 
 /**
- * @param {{ videoId: (string|null), entries: [Entry], actions: Record<string,function> }} props
+ * @param {{ playerData: PlayerData, actions: Record<string,function> }} props
  * @return {JSX.Element}
  */
-const App = ({ videoId, entries, actions }) => {
+const App = ({ playerData, actions }) => {
+  const { videoId, entries } = playerData;
+
   //
   // State definition
   //
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
-  const [{ loopingEntries, currentTime, playing, }, setState] = useState({
+  const [{ loopingEntries, currentTime, playing, }, __, ___, mergeState] = useUpdate({
     loopingEntries: [],
     currentTime: 0,
     playing: false,
   });
-  const mergeState = (next) => setState(prev => ({...prev, ...next}));
   const currentEntry = _.reverse(Array.from(entries)).find(e => e.begin <= currentTime);
 
   //
@@ -54,7 +56,7 @@ const App = ({ videoId, entries, actions }) => {
     });
 
     // On unmount (not called except hot-reload on development)
-    return () => { console.log(`:: destrucing iframe (${videoId})`); player.ready && player.destroy(); };
+    return () => player.ready && player.destroy();
   }, []);
 
   useEffect(() => {
@@ -178,7 +180,17 @@ const App = ({ videoId, entries, actions }) => {
           >
             <i className="material-icons">search</i>
           </div>
-          <div onClick={() => actions.setModal('TODO: Update language and Deck creation')}>
+          <div
+            className={CN({ disabled: !playerData.videoId })}
+            onClick={() => playerData.videoId && actions.setModal(
+              <LanguageSelectForm {...{
+                subtitleInfo: playerData.subtitleInfo,
+                subtitleUrl1: playerData.subtitleUrl1,
+                subtitleUrl2: playerData.subtitleUrl2,
+                actions,
+              }} />
+            )}
+          >
             <i className="material-icons">edit</i>
           </div>
           <div onClick={() => actions.setModal('TODO: Lanaguage preference')}>

@@ -37,7 +37,7 @@ storiesOf('Root', module)
 .add('Default', () => {
   return <Root />;
 })
-.add('Empty', () => {
+.add('Clear client storage', () => {
   const storyFn = async () => {
     await localforage.clear();
     return <Root />;
@@ -68,8 +68,10 @@ storiesOf('App', module)
   const videoId = 'VsPE2ByYYyg';
   const entries = createEntries(ttml1, ttml2);
   const props = {
-    videoId,
-    entries,
+    playerData: {
+      videoId,
+      entries,
+    },
     actions: { setModal: () => {} }
   };
   return <App {...props} />;
@@ -78,8 +80,10 @@ storiesOf('App', module)
   const videoId = null;
   const entries = [];
   const props = {
-    videoId,
-    entries,
+    playerData: {
+      videoId,
+      entries,
+    },
     actions: { setModal: () => {} }
   };
   return <App {...props} />;
@@ -91,10 +95,10 @@ storiesOf('App', module)
 import NewVideoForm from './components/NewVideoForm.js';
 
 storiesOf('NewVideoForm', module)
-.add('Default', () => {
+.add('Empty', () => {
   const props = {
     defaultVideoId: null,
-    actions: { setPlayerData: console.log },
+    actions: { update: console.log },
   };
   return <NewVideoForm {...props} />;
 })
@@ -103,9 +107,27 @@ storiesOf('NewVideoForm', module)
   const videoId = 'bVlFUcVNErs'
   const props = {
     defaultVideoId: videoId,
-    actions: { setPlayerData: console.log },
+    actions: { update: console.log },
   };
   return <NewVideoForm {...props} />;
+});
+
+//
+// LanguageSelectForm
+//
+import LanguageSelectForm from './components/LanguageSelectForm.js';
+import { findPreferredSubtitles } from './utils.js';
+
+storiesOf(LanguageSelectForm.name, module)
+.add('With Data', () => {
+  // NOTE: this data is old one so the subtitle urls are invalid now.
+  const subtitleInfo = require('./fixtures/subtitleInfo.json');
+  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, 'ru', 'en');
+  const props = {
+    subtitleInfo, subtitleUrl1, subtitleUrl2,
+    actions: { update: console.log },
+  };
+  return <LanguageSelectForm {...props} />;
 });
 
 

@@ -4,7 +4,6 @@ https://ytsub.hiogawa.now.sh
 
 TODO
 
-- `App` keeps `videoInfo` so that it's easy to change language
 - Language preference
 - Ankitube (deck, practice, rate, etc...)
   - Create Backend

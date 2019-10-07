@@ -195,7 +195,7 @@ const extractSubtitleInfo = (content) => {
       vssId: t.vssId,
     })),
     translations: translations.map(t => ({
-      name: t.languageName.simpleText,
+      name: `${t.languageName.simpleText} (auto-translated)`,
       code: t.languageCode
     }))
   };
