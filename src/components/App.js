@@ -5,6 +5,7 @@ import CN from 'classnames';
 
 import '../typedef.js';
 import { Player, secondToTimestamp, stopProp } from '../utils.js'
+import NewVideoForm from './NewVideoForm.js'
 
 //
 // Dom Tree (cf. app.scss)
@@ -168,16 +169,22 @@ const App = ({ videoId, entries, actions }) => {
           )}
         </div>
         <div id="nav">
-          <div onClick={() => actions.showSettings()}>
+          <div onClick={() => actions.setModal(
+              <NewVideoForm {...{
+                actions,
+                defaultVideoId: null,
+              }} />
+            )}
+          >
             <i className="material-icons">search</i>
           </div>
-          { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }
-          <div className='disabled'>
-            <i className="material-icons">history</i>
+          <div onClick={() => actions.setModal('TODO: Update language and Deck creation')}>
+            <i className="material-icons">edit</i>
           </div>
-          <div className='disabled'>
+          <div onClick={() => actions.setModal('TODO: Lanaguage preference')}>
             <i className="material-icons">settings</i>
           </div>
+          { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }
         </div>
       </div>
     </div>

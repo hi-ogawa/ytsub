@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
 import { interval } from 'rxjs';
@@ -26,24 +26,44 @@ export const useLoader = (origF /* promise returning function */) => {
         // NOTE:
         // If "origF" caused the component to be unmounted,
         // then this "setState" leads to warning.
-        setState({ loading: false, error: null });
-        return { value: val, state };
+        const nextState = { loading: false, error: null };
+        setState(nextState);
+        return { value: val, state: nextState };
       },
       (err) => {
-        setState({ loading: false, error: err });
-        return { value: null, state };
+        const nextState = { loading: false, error: err };
+        setState(nextState);
+        return { value: null, state: nextState };
       }
     );
   }
   return [ newF, state ];
 }
 
-// cf. https://github.com/kolodny/immutability-helper
+// Implement `updateState` via reducer dispatch so that
+// it won't use "old state" when it's invoked in closure (e.g. in promise handler).
+// Also, with `getState`, it can fetch latest state even from closure.
+// `mergeState` is just for convinience.
 export const useUpdate = (initialState) => {
-  const [state, setState] = useState(initialState);
-  const updateState = (command) => setState(update(state, command));
-  return [state, updateState];
-}
+  const reducer = (state, action) => {
+    if (action.type === 'UPDATE') {
+      return update(state, action.command);
+    }
+    if (action.type === 'GET_STATE') {
+      action.loophole(state);
+      return state;
+    }
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const updateState = (command) => dispatch({ type: 'UPDATE', command });
+  const getState = () => {
+    let currentState;
+    dispatch({ type: 'GET_STATE', loophole: (state) => { currentState = state; } });
+    return currentState;
+  };
+  const mergeState = (next) => updateState({ $merge: next });
+  return [state, updateState, getState, mergeState];
+};
 
 //
 // Youtube iframe wrapper
@@ -197,8 +217,34 @@ export const getYoutubeSubtitleInfo = (id) =>
 
 export const getEntries = async (subtitleUrl1, subtitleUrl2) => {
   const resps = await Promise.all([subtitleUrl1, subtitleUrl2].map(url => fetch(url)));
+  if (!resps.every(r => r.ok)) {
+    throw new Error('Subtitle not found');
+  }
   const [ttml1, ttml2] = await Promise.all(resps.map(r => r.text()));
   return createEntries(ttml1, ttml2);
+}
+
+// Do all the steps together
+export const getPlayerDataFromUrl = async (url, lang1, lang2) => {
+  const videoId = parseVideoId(url);
+  if (!videoId) {
+    throw new Error('Unsupported URL');
+  }
+  let subtitleInfo;
+  try {
+    subtitleInfo = await getYoutubeSubtitleInfo(videoId);
+  } catch (e) {
+    console.error(e.message);
+    throw new Error('Unsupported Video');
+  }
+  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, lang1, lang2);
+  let entries;
+  try {
+    entries = await getEntries(subtitleUrl1, subtitleUrl2);
+  } catch (e) {
+    throw new Error('Failed to load subtitles');
+  }
+  return { videoId, entries, subtitleInfo, subtitleUrl1, subtitleUrl2 };
 }
 
 export const createEntries = (ttml1, ttml2) => {

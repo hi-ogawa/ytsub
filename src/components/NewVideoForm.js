@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import CN from 'classnames';
-import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries, useLoader } from '../utils.js';
+import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries,
+         useLoader, useUpdate } from '../utils.js';
 
-const Settings = ({
-  setPlayerData,
+const NewVideoForm = ({
+  actions,
   defaultVideoId,
   preference = { lang1: 'ru', lang2: 'en' }, // TODO: Implement preference system
 }) => {
-  const [state, setState] = useState({
+  const [state, _, __, mergeState] = useUpdate({
     videoId: defaultVideoId || '',
     subtitleInfo: { tracks: [], translations: [] },
     subtitleUrl1: '',
     subtitleUrl2: ''
   });
-  const mergeState = (next) => setState(prev => ({...prev, ...next}));
 
   const [_getYoutubeSubtitleInfo, { loading: loading1 }] = useLoader(getYoutubeSubtitleInfo)
   const [_getEntries, { loading: loading2 }] = useLoader(getEntries)
@@ -21,17 +21,20 @@ const Settings = ({
   const videoInputHandler = async () => {
     const videoId = parseVideoId(state.videoId);
     if (!videoId) {
-      return window.alert('Unsupported input');
+      window.alert('Unsupported input');
+      return false;
     } else {
       const { value: subtitleInfo, state: { error } } = await _getYoutubeSubtitleInfo(videoId)
       if (error) {
         console.error(e.message);
-        return window.alert('Unsupported video');
+        window.alert('Unsupported video');
+        return false;
       }
       const { subtitleUrl1, subtitleUrl2 } =
           findPreferredSubtitles(subtitleInfo, preference.lang1, preference.lang2);
       mergeState({ videoId, subtitleInfo, subtitleUrl1, subtitleUrl2 });
     }
+    return true;
   }
 
   const playHandler = async () => {
@@ -40,19 +43,19 @@ const Settings = ({
       console.error(e.message);
       return window.alert('Failed to load subtitles');
     }
-    setPlayerData(state.videoId, entries);
+    actions.update({ $merge:
+      {
+        playerData: {
+          entries,
+          ...state
+        },
+        modal: null
+      }
+    });
   }
 
-  // On mount
-  useEffect(() => {
-    // If defaultVideoId is given, then automatically trigger loading subtitleInfo.
-    if (defaultVideoId) {
-      videoInputHandler();
-    }
-  }, [])
-
   return (
-    <div id='settings-container'>
+    <div id='new-video-form-container'>
       <h1>Load Video</h1>
       <div className='video-input'>
         <label>Youtube Video</label>
@@ -123,4 +126,4 @@ const Settings = ({
   );
 }
 
-export default Settings;
+export default NewVideoForm;

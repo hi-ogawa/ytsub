@@ -4,9 +4,10 @@ https://ytsub.hiogawa.now.sh
 
 TODO
 
+- `App` keeps `videoInfo` so that it's easy to change language
 - Language preference
-- History
-- Ankitube (deck, rate, etc...)
+- Ankitube (deck, practice, rate, etc...)
+  - Create Backend
 - Scroll subtitle panel to follow video
 
 Tips

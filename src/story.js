@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CN from 'classnames';
 import { storiesOf } from '@storybook/react';
+import localforage from 'localforage';
 
 //
 // Support async storyFn (I thought I need it but not used now)
@@ -36,6 +37,13 @@ storiesOf('Root', module)
 .add('Default', () => {
   return <Root />;
 })
+.add('Empty', () => {
+  const storyFn = async () => {
+    await localforage.clear();
+    return <Root />;
+  };
+  return <AsyncStoryFnWrapper storyFn={storyFn} />;
+})
 .add('From WebShare', () => {
   // NOTE: Replaced state won't be cleared when story is changed,
   // so it needs to manually refresh browser if you go "Root > Default" story.
@@ -62,7 +70,7 @@ storiesOf('App', module)
   const props = {
     videoId,
     entries,
-    actions: { showSettings: () => {} }
+    actions: { setModal: () => {} }
   };
   return <App {...props} />;
 })
@@ -72,32 +80,32 @@ storiesOf('App', module)
   const props = {
     videoId,
     entries,
-    actions: { showSettings: () => {} }
+    actions: { setModal: () => {} }
   };
   return <App {...props} />;
 });
 
 //
-// Settings (aka Load New Video)
+// NewVideoForm
 //
-import Settings from './components/Settings.js';
+import NewVideoForm from './components/NewVideoForm.js';
 
-storiesOf('Settings', module)
+storiesOf('NewVideoForm', module)
 .add('Default', () => {
   const props = {
     defaultVideoId: null,
-    setPlayerData: console.log,
+    actions: { setPlayerData: console.log },
   };
-  return <Settings {...props} />;
+  return <NewVideoForm {...props} />;
 })
 .add('With Data', () => {
   // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
   const videoId = 'bVlFUcVNErs'
   const props = {
     defaultVideoId: videoId,
-    setPlayerData: console.log,
+    actions: { setPlayerData: console.log },
   };
-  return <Settings {...props} />;
+  return <NewVideoForm {...props} />;
 });
 
 
