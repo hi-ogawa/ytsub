@@ -32,9 +32,13 @@
 
   #modal-inner {
     width: 80%;
+    max-width: 400px;
     height: 90%;
-    left: 10%;
-    top: 5%;
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
     background: white;
     box-shadow: 0 0px 16px 0px rgba(0, 0, 0, 0.4);
 

@@ -95,7 +95,11 @@
       }
 
       i {
-        // Centerize label
+        // Adjucst a bit
+        position: relative;
+        top: 1px;
+
+        // Centerize "PLAY" label
         margin-right: -12px;
       }
     }

@@ -2,38 +2,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import _ from 'lodash';
 import CN from 'classnames';
+
+import '../typedef.js';
 import { Player, secondToTimestamp, stopProp } from '../utils.js'
-import Modal from './Modal.js';
-import Settings from './Settings.js';
 
 /**
- * @typedef Entry
- * @property {string} id
- * @property {number} begin
- * @property {number} end
- * @property {string} text1
- * @property {string} text2
- * @property {string} deckId
- * @property {[{ value: string }]} rates
+ * @param {{ videoId: (string|null), entries: [Entry], actions: Record<string,function> }} props
+ * @return {JSX.Element}
  */
-
-/**
- * @param {{ videoId: string, entries: [Entry] }} props
- * @return {any}
- */
-const App = ({ videoId: _videoId, entries: _entries }) => {
-  // TODO:
-  // - App will be called Player
-  // - Modal, Settings, nav, etc... altogether are supposed to live in Root component
-  const [videoId, setVideoId] = useState(_videoId);
-  const [entries, setEntries] = useState(_entries);
-  const [ modalContent, setModalContent ] = useState(null);
-  const setPlayerData = (videoId, entries) => {
-    setVideoId(videoId);
-    setEntries(entries);
-    setModalContent(null);
-  }
-
+const App = ({ videoId, entries, actions }) => {
   //
   // State definition
   //
@@ -66,10 +43,9 @@ const App = ({ videoId: _videoId, entries: _entries }) => {
       player.getObservable(INTERVAL).subscribe(mergeState);
     });
 
-    // On unmount
-    return () => { player.ready && player.destroy(); };
+    // On unmount (not called except hot-reload on development)
+    return () => { console.log(`:: destrucing iframe (${videoId})`); player.ready && player.destroy(); };
   }, []);
-
 
   useEffect(() => {
     const player = playerRef.current;
@@ -93,7 +69,6 @@ const App = ({ videoId: _videoId, entries: _entries }) => {
       }
     }
   }, [currentTime, loopingEntries])
-
 
   //
   // Callbacks
@@ -127,13 +102,11 @@ const App = ({ videoId: _videoId, entries: _entries }) => {
     mergeState({ loopingEntries: nextLoopingEntries });
   }
 
-
   //
   // Render
   //
   return (
     <div id="app">
-      <Modal content={modalContent} setContent={setModalContent} />
       <div id="player-container">
         <div id="player-aspect-ratio-fixer1">
           <div id="player-aspect-ratio-fixer2">
@@ -142,58 +115,60 @@ const App = ({ videoId: _videoId, entries: _entries }) => {
           </div>
         </div>
       </div>
-      <div id="subtitle-container">
-        { entries.map((entry) =>
-          <div
-            key={entry.id}
-            onClick={() => togglePlayingEntry(entry)}
-            className={CN('entry', {
-              play: entry === currentEntry && playing,
-              paused: entry === currentEntry && !playing,
-              loop: loopingEntries.includes(entry),
-              rate: false,
-            })}
-          >
-            <div className="entry__header">
-              {/* TODO: Not implemented */}
-              { false &&
-                <div className="log">
-                  { entry.rates.map((rate) =>
-                      <div>{ rate.value }</div>
-                    )}
+      <div id="subtitle-and-nav-container">
+        <div id="subtitle-container">
+          { entries.map((entry) =>
+            <div
+              key={entry.id}
+              onClick={() => togglePlayingEntry(entry)}
+              className={CN('entry', {
+                play: entry === currentEntry && playing,
+                paused: entry === currentEntry && !playing,
+                loop: loopingEntries.includes(entry),
+                rate: false,
+              })}
+            >
+              <div className="entry__header">
+                {/* TODO: Not implemented */}
+                { false &&
+                  <div className="log">
+                    { entry.rates.map((rate) =>
+                        <div>{ rate.value }</div>
+                      )}
+                  </div>
+                }
+                <div className="time">{ secondToTimestamp(entry.begin) } - { secondToTimestamp(entry.end) }</div>
+                {/* TODO: Not implemented */}
+                { false &&
+                  <div className="rate">
+                    <i className="material-icons">edit</i>
+                  </div>
+                }
+                <div onClick={stopProp(() => toggleLoopingEntry(entry))} className="loop">
+                  <i className="material-icons">repeat</i>
                 </div>
-              }
-              <div className="time">{ secondToTimestamp(entry.begin) } - { secondToTimestamp(entry.end) }</div>
-              {/* TODO: Not implemented */}
-              { false &&
-                <div className="rate">
-                  <i className="material-icons">edit</i>
+                <div onClick={stopProp(() => togglePlayingEntry(entry))} className="play">
+                  <i className="material-icons">play_circle_outline</i>
                 </div>
-              }
-              <div onClick={stopProp(() => toggleLoopingEntry(entry))} className="loop">
-                <i className="material-icons">repeat</i>
               </div>
-              <div onClick={stopProp(() => togglePlayingEntry(entry))} className="play">
-                <i className="material-icons">play_circle_outline</i>
+              <div className="entry__body">
+                <div>{ entry.text1 }</div>
+                <div>{ entry.text2 }</div>
               </div>
             </div>
-            <div className="entry__body">
-              <div>{ entry.text1 }</div>
-              <div>{ entry.text2 }</div>
-            </div>
+          )}
+        </div>
+        <div id="nav">
+          <div onClick={() => actions.showSettings()}>
+            <i className="material-icons">search</i>
           </div>
-        )}
-      </div>
-      <div id="nav">
-        <div onClick={() => setModalContent(<Settings {...{ setPlayerData }}/>)}>
-          <i className="material-icons">search</i>
-        </div>
-        { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }
-        <div className='disabled'>
-          <i className="material-icons">history</i>
-        </div>
-        <div className='disabled'>
-          <i className="material-icons">settings</i>
+          { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }
+          <div className='disabled'>
+            <i className="material-icons">history</i>
+          </div>
+          <div className='disabled'>
+            <i className="material-icons">settings</i>
+          </div>
         </div>
       </div>
     </div>

@@ -26,11 +26,24 @@ const AsyncStoryFnWrapper = ({ storyFn }) => {
 }
 
 //
-// App
+// Root
 //
 import 'style-loader!css-loader!sass-loader!./scss/index.scss'
-import App from './components/App.js';
+import Root from './components/Root.js';
 import { createEntries } from './utils.js';
+
+storiesOf('Root', module)
+.add('Default', () => {
+  return <Root />;
+})
+.add('TODO: From WebShare', () => {
+  return 'TODO';
+});
+
+//
+// App
+//
+import App from './components/App.js';
 
 storiesOf('App', module)
 .add('With Data', () => {
@@ -39,13 +52,21 @@ storiesOf('App', module)
   // cf. https://www.youtube.com/watch?v=VsPE2ByYYyg
   const videoId = 'VsPE2ByYYyg';
   const entries = createEntries(ttml1, ttml2);
-  const props = { videoId, entries };
+  const props = {
+    videoId,
+    entries,
+    actions: { showSettings: () => {} }
+  };
   return <App {...props} />;
 })
 .add('Empty', () => {
   const videoId = null;
   const entries = [];
-  const props = { videoId, entries };
+  const props = {
+    videoId,
+    entries,
+    actions: { showSettings: () => {} }
+  };
   return <App {...props} />;
 });
 
@@ -68,7 +89,6 @@ storiesOf('Settings', module)
 //
 // @spinner example
 //
-
 storiesOf('@spinner-container', module)
 .add('Default', () => {
   const C = () => {

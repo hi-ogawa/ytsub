@@ -5,10 +5,11 @@ https://ytsub.hiogawa.now.sh
 TODO
 
 - WebShare target
-- AnkiTube feature
-  - deck, rate
-- More Interaction
-  - scroll subtitle to follow video
+  - Load video based on url query
+- More features
+  - Ankitube (deck, rate, etc...)
+  - History
+  - Scroll subtitle panel to follow video
 
 Tips
 
