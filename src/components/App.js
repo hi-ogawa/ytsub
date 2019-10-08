@@ -7,6 +7,7 @@ import '../typedef.js';
 import { Player, secondToTimestamp, stopProp, useUpdate } from '../utils.js'
 import NewVideoForm from './NewVideoForm.js'
 import LanguageSelectForm from './LanguageSelectForm.js';
+import Settings from './Settings.js';
 
 //
 // Dom Tree (cf. app.scss)
@@ -18,10 +19,10 @@ import LanguageSelectForm from './LanguageSelectForm.js';
 //
 
 /**
- * @param {{ playerData: PlayerData, actions: Record<string,function> }} props
+ * @param {{ playerData: PlayerData, userData: any, actions: Record<string,function> }} props
  * @return {JSX.Element}
  */
-const App = ({ playerData, actions }) => {
+const App = ({ playerData, userData, actions }) => {
   const { videoId, entries } = playerData;
 
   //
@@ -175,6 +176,7 @@ const App = ({ playerData, actions }) => {
               <NewVideoForm {...{
                 actions,
                 defaultVideoId: null,
+                preference: userData.preference
               }} />
             )}
           >
@@ -193,7 +195,13 @@ const App = ({ playerData, actions }) => {
           >
             <i className="material-icons">edit</i>
           </div>
-          <div onClick={() => actions.setModal('TODO: Lanaguage preference')}>
+          <div onClick={() => actions.setModal(
+              <Settings {...{
+                actions,
+                userData
+              }}/>
+            )}
+          >
             <i className="material-icons">settings</i>
           </div>
           { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }

@@ -8,7 +8,7 @@ import NewVideoForm from './NewVideoForm.js';
 import { useUpdate, useLoader, getPlayerDataFromUrl } from '../utils.js';
 
 const STORAGE_KEY = 'state-tree';
-const PERSIST_FILTER = ['user'];
+const PERSIST_FILTER = ['userData'];
 
 //
 // Dom tree
@@ -28,7 +28,7 @@ const Root = () => {
       entries: []
     },
     modal: null,
-    user: {
+    userData: {
       id: null,
       token: null,
       decks: [],
@@ -38,6 +38,7 @@ const Root = () => {
         lang2: 'en',
       }
     },
+    RESTORE_DONE: false,
   });
 
   const actions = {
@@ -63,7 +64,7 @@ const Root = () => {
     // Web Share Target handler (cf. https://wicg.github.io/web-share-target/level-2/)
     const sharedUrl = (new URL(window.location)).searchParams.get('share_target_text');
     if (sharedUrl) {
-      const { lang1, lang2 } = state.user.preference;
+      const { lang1, lang2 } = state.userData.preference;
       (async () => {
         const { value, state: { error } } = await _getPlayerDataFromUrl(sharedUrl, lang1, lang2);
         if (error) {
@@ -77,6 +78,9 @@ const Root = () => {
         <NewVideoForm {...{
           actions,
           defaultVideoId: null,
+          // TODO: this copy of userData doesn't reflect current client storage
+          // Setup redux system to make single source of truth
+          preference: state.userData.preference
         }} />
       );
     }
@@ -86,8 +90,8 @@ const Root = () => {
       (lastState) => {
         if (lastState) {
           update({ $merge: lastState });
-          update({ RESTORE_DONE: { $set: true } });
         }
+        update({ RESTORE_DONE: { $set: true } });
       },
       (err) => console.error(err.message) // Operation could fails (e.g. storage size limit)
     );
@@ -107,7 +111,8 @@ const Root = () => {
   };
   const appProps = {
     actions,
-    playerData: state.playerData
+    playerData: state.playerData,
+    userData: state.userData,
   }
   return (
     <>

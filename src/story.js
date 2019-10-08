@@ -99,6 +99,7 @@ storiesOf('NewVideoForm', module)
   const props = {
     defaultVideoId: null,
     actions: { update: console.log },
+    preference: { lang1: 'ru', lang2: 'en' }
   };
   return <NewVideoForm {...props} />;
 })
@@ -108,6 +109,7 @@ storiesOf('NewVideoForm', module)
   const props = {
     defaultVideoId: videoId,
     actions: { update: console.log },
+    preference: { lang1: 'ru', lang2: 'en' }
   };
   return <NewVideoForm {...props} />;
 });
@@ -128,6 +130,25 @@ storiesOf(LanguageSelectForm.name, module)
     actions: { update: console.log },
   };
   return <LanguageSelectForm {...props} />;
+});
+
+//
+// Settings
+//
+import Settings from './components/Settings.js';
+
+storiesOf(Settings.name, module)
+.add('Default', () => {
+  const props = {
+    userData: {
+      preference: {
+        lang1: 'ru',
+        lang2: 'en',
+      }
+    },
+    actions: { update: console.log },
+  };
+  return <Settings {...props} />;
 });
 
 

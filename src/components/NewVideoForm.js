@@ -6,7 +6,7 @@ import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntrie
 const NewVideoForm = ({
   actions,
   defaultVideoId,
-  preference = { lang1: 'ru', lang2: 'en' }, // TODO: Implement preference system
+  preference,
 }) => {
   const [state, __, ___, mergeState] = useUpdate({
     videoId: defaultVideoId || '',
