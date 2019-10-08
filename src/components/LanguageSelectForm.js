@@ -1,13 +1,13 @@
 import React from 'react';
 import CN from 'classnames';
+
+import { useGetSelector, useActions } from '../stateDef.js'
 import { getEntries, useLoader, useUpdate } from '../utils.js';
 
-const LanguageSelectForm = ({
-  actions,
-  subtitleUrl1,
-  subtitleUrl2,
-  subtitleInfo,
-}) => {
+const LanguageSelectForm = () => {
+  const { update: updateRoot } = useActions();
+  const { subtitleUrl1, subtitleUrl2, subtitleInfo } = useGetSelector('playerData');
+
   const [state, __, ___, mergeState] = useUpdate({
     subtitleInfo,
     subtitleUrl1,
@@ -16,13 +16,13 @@ const LanguageSelectForm = ({
 
   const [_getEntries, { loading }] = useLoader(getEntries)
 
-  const playHandler = async () => {
+  const updateHandler = async () => {
     const { value: entries, state: { error } } = await _getEntries(state.subtitleUrl1, state.subtitleUrl2);
     if (error) {
       console.error(error.message);
       return window.alert('Failed to load subtitles');
     }
-    actions.update({
+    updateRoot({
       playerData: { $merge: {
         entries,
         subtitleUrl1: state.subtitleUrl1,
@@ -83,10 +83,10 @@ const LanguageSelectForm = ({
         </select>
       </div>
 
-      <div className='play-action'>
+      <div className='action'>
         <button
           disabled={!(state.subtitleUrl1 && state.subtitleUrl2)}
-          onClick={playHandler}
+          onClick={updateHandler}
           className={CN({ loading })}
         >
           <span>UPDATE</span>

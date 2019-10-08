@@ -1,13 +1,14 @@
 import React from 'react';
 import CN from 'classnames';
+
+import { useGetSelector, useActions } from '../stateDef.js'
 import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries,
          useLoader, useUpdate } from '../utils.js';
 
-const NewVideoForm = ({
-  actions,
-  defaultVideoId,
-  preference,
-}) => {
+const NewVideoForm = ({ defaultVideoId }) => {
+  const { merge: mergeRoot } = useActions();
+  const { lang1, lang2 } = useGetSelector('userData.preference');
+
   const [state, __, ___, mergeState] = useUpdate({
     videoId: defaultVideoId || '',
     subtitleInfo: { tracks: [], translations: [] },
@@ -30,8 +31,7 @@ const NewVideoForm = ({
         window.alert('Unsupported video');
         return false;
       }
-      const { subtitleUrl1, subtitleUrl2 } =
-          findPreferredSubtitles(subtitleInfo, preference.lang1, preference.lang2);
+      const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, lang1, lang2);
       mergeState({ videoId, subtitleInfo, subtitleUrl1, subtitleUrl2 });
     }
     return true;
@@ -43,14 +43,12 @@ const NewVideoForm = ({
       console.error(error.message);
       return window.alert('Failed to load subtitles');
     }
-    actions.update({ $merge:
-      {
-        playerData: {
-          entries,
-          ...state
-        },
-        modal: null
-      }
+    mergeRoot({
+      playerData: {
+        entries,
+        ...state
+      },
+      modal: null
     });
   }
 

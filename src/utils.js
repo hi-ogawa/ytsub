@@ -1,3 +1,4 @@
+// NOTE: This file is loadable to nodejs (cf. npm run node-utils)
 import { useState, useReducer } from 'react';
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';

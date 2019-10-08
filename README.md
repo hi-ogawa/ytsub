@@ -4,7 +4,6 @@ https://ytsub.hiogawa.now.sh
 
 TODO
 
-- Language preference
 - Ankitube (deck, practice, rate, etc...)
   - Create Backend
 - Scroll subtitle panel to follow video

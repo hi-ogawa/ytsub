@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CN from 'classnames';
-import localforage from 'localforage';
+import _ from 'lodash';
 
 import App from './App.js';
 import Modal from './Modal.js';
 import NewVideoForm from './NewVideoForm.js';
-import { useUpdate, useLoader, getPlayerDataFromUrl } from '../utils.js';
-
-const STORAGE_KEY = 'state-tree';
-const PERSIST_FILTER = ['userData'];
+import { useGetSelector, useActions } from '../stateDef.js'
+import { useLoader, getPlayerDataFromUrl } from '../utils.js';
 
 //
 // Dom tree
@@ -17,108 +15,40 @@ const PERSIST_FILTER = ['userData'];
 //   - #app
 //
 const Root = () => {
+  const loadingStorage = useGetSelector('loadingStorage');
+  const { lang1, lang2 } = useGetSelector('userData.preference');
+  const { merge, setModal } = useActions();
+  const callOnce = useRef(false);
+  const [_getPlayerDataFromUrl, { loading: loadingSharedUrl }] = useLoader(getPlayerDataFromUrl)
 
-  // Mini redux system
-  const [state, update] = useUpdate({
-    playerData: {
-      videoId: null,
-      subtitleInfo: { tracks: [], translations: [] },
-      subtitleUrl1: null,
-      subtitleUrl2: null,
-      entries: []
-    },
-    modal: null,
-    userData: {
-      id: null,
-      token: null,
-      decks: [],
-      practiceDecks: [],
-      preference: {
-        lang1: 'ru',
-        lang2: 'en',
-      }
-    },
-    RESTORE_DONE: false,
-  });
-
-  const actions = {
-    update: update,
-    // update: (...args) => { console.log(...args); update(...args) },
-
-    setPlayerData: (videoId, entries) => {
-      actions.update({ $merge: {
-        playerData: { videoId, entries },
-        modal: null
-      }})
-    },
-
-    setModal: (modal) => {
-      actions.update({ $merge: { modal }});
-    },
-  }
-
-  const [_getPlayerDataFromUrl, { loading }] = useLoader(getPlayerDataFromUrl)
-
-  // On mount (i.e. on initial page load)
   useEffect(() => {
-    // Web Share Target handler (cf. https://wicg.github.io/web-share-target/level-2/)
-    const sharedUrl = (new URL(window.location)).searchParams.get('share_target_text');
-    if (sharedUrl) {
-      const { lang1, lang2 } = state.userData.preference;
+    // Call once after loadingStorage finished
+    if (!loadingStorage && !callOnce.current) {
+      callOnce.current = true;
       (async () => {
-        const { value, state: { error } } = await _getPlayerDataFromUrl(sharedUrl, lang1, lang2);
-        if (error) {
-          console.error(error); window.alert('Failed to load video');
+        // If user landed from WebShare, then automatically load its referencing video.
+        // Otherwise, prompt NewVideoForm.
+        const sharedUrl = (new URL(window.location)).searchParams.get('share_target_text');
+        if (sharedUrl) {
+          const { value, state: { error } } = await _getPlayerDataFromUrl(sharedUrl, lang1, lang2);
+          if (error) {
+            console.error(error);
+            window.alert('Failed to load video');
+          } else {
+            merge({ playerData: value });
+          }
         } else {
-          actions.update({ $merge: { playerData: value }});
+          setModal(<NewVideoForm {...{ defaultVideoId: null }} />);
         }
       })();
-    } else {
-      actions.setModal(
-        <NewVideoForm {...{
-          actions,
-          defaultVideoId: null,
-          // TODO: this copy of userData doesn't reflect current client storage
-          // Setup redux system to make single source of truth
-          preference: state.userData.preference
-        }} />
-      );
     }
+  }, [ loadingStorage ]);
 
-    // Restore last state
-    localforage.getItem(STORAGE_KEY).then(
-      (lastState) => {
-        if (lastState) {
-          update({ $merge: lastState });
-        }
-        update({ RESTORE_DONE: { $set: true } });
-      },
-      (err) => console.error(err.message) // Operation could fails (e.g. storage size limit)
-    );
-  }, []);
-
-  // Persist current state
-  useEffect(() => {
-    if (state.RESTORE_DONE) {
-      localforage.setItem(STORAGE_KEY, _.pick(state, PERSIST_FILTER));
-    }
-  }, [state]);
-
-
-  const modalProps = {
-    content: state.modal,
-    setContent: actions.setModal,
-  };
-  const appProps = {
-    actions,
-    playerData: state.playerData,
-    userData: state.userData,
-  }
   return (
     <>
-      <div id='root-spinner' className={CN({ loading })} />
-      <Modal {...modalProps} />
-      <App {...appProps}/>
+      <div id='root-spinner' className={CN({ loading: loadingStorage || loadingSharedUrl })} />
+      <Modal />
+      <App />
     </>
   );
 }

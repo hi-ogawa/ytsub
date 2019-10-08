@@ -1,26 +1,13 @@
 import React from 'react';
 
-import { useUpdate } from '../utils.js'
+import { useGetSelector, useActions } from '../stateDef.js'
 import { translations as languages } from '../fixtures/subtitleInfo.json';
 
-const Settings = ({
-  actions,
-  userData,
-}) => {
-  const [
-    { lang1, lang2 },
-    __, ___, mergeState
-  ] = useUpdate(userData.preference);
-
-  const mergePreference = (preference) => {
-    mergeState(preference);
-    actions.update({
-      userData: {
-        preference: {
-          $merge: preference
-        }
-      }
-    });
+const Settings = () => {
+  const { lang1, lang2 } = useGetSelector('userData.preference');
+  const { update } = useActions();
+  const mergePreference = (next) => {
+    update({ userData: { preference: { $merge: next } } });
   }
 
   return (

@@ -213,6 +213,9 @@
     &.disabled {
       cursor: not-allowed;
       color: $grey-5;
+      i {
+        color: $grey-4;
+      }
     }
   }
 }

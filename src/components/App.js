@@ -1,9 +1,9 @@
-// @ts-check
 import React, { useRef, useEffect } from 'react';
 import _ from 'lodash';
 import CN from 'classnames';
 
 import '../typedef.js';
+import { useGetSelector, useActions } from '../stateDef.js'
 import { Player, secondToTimestamp, stopProp, useUpdate } from '../utils.js'
 import NewVideoForm from './NewVideoForm.js'
 import LanguageSelectForm from './LanguageSelectForm.js';
@@ -18,12 +18,9 @@ import Settings from './Settings.js';
 //     - #nav
 //
 
-/**
- * @param {{ playerData: PlayerData, userData: any, actions: Record<string,function> }} props
- * @return {JSX.Element}
- */
-const App = ({ playerData, userData, actions }) => {
-  const { videoId, entries } = playerData;
+const App = () => {
+  const { videoId, entries } = useGetSelector('playerData')
+  const { setModal } = useActions();
 
   //
   // State definition
@@ -172,36 +169,16 @@ const App = ({ playerData, userData, actions }) => {
           )}
         </div>
         <div id="nav">
-          <div onClick={() => actions.setModal(
-              <NewVideoForm {...{
-                actions,
-                defaultVideoId: null,
-                preference: userData.preference
-              }} />
-            )}
-          >
+          <div onClick={() => setModal(<NewVideoForm {...{ defaultVideoId: null }} />)}>
             <i className="material-icons">search</i>
           </div>
           <div
-            className={CN({ disabled: !playerData.videoId })}
-            onClick={() => playerData.videoId && actions.setModal(
-              <LanguageSelectForm {...{
-                subtitleInfo: playerData.subtitleInfo,
-                subtitleUrl1: playerData.subtitleUrl1,
-                subtitleUrl2: playerData.subtitleUrl2,
-                actions,
-              }} />
-            )}
+            className={CN({ disabled: !videoId })}
+            onClick={() => videoId && setModal(<LanguageSelectForm />)}
           >
             <i className="material-icons">edit</i>
           </div>
-          <div onClick={() => actions.setModal(
-              <Settings {...{
-                actions,
-                userData
-              }}/>
-            )}
-          >
+          <div onClick={() => setModal(<Settings />)}>
             <i className="material-icons">settings</i>
           </div>
           { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }

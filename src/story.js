@@ -26,6 +26,48 @@ const AsyncStoryFnWrapper = ({ storyFn }) => {
   return <>{ children || 'Loading...' }</>;
 }
 
+// TODO: use this for restoring messed up URL by "Root > From WebShare"
+const OnLeaveWrapper = ({ onLeave, render }) => {
+  useEffect(() => onLeave, []);
+  return render();
+}
+
+//
+// stateDef.js
+//
+import { createProvider, useActions, useGetSelector, useRootState } from './stateDef.js';
+
+// helpers
+const mkProviderDecorator = (options = {}) => (storyFn) => {
+  const Provider = createProvider(options);
+  return <Provider>{storyFn()}</Provider>;
+}
+
+storiesOf('stateDef', module)
+.addDecorator(mkProviderDecorator())
+.add('createProvider', () => <div>I'm inside of Provider</div>)
+.add('useRootState', () => {
+  const C = () => {
+    const state = useRootState();
+    return <pre>{JSON.stringify(state, null, 2)}</pre>;
+  };
+  return <C />;
+})
+.add('useActions + useGetSelector', () => {
+  const C = () => {
+    const counter = useGetSelector('counter');
+    const { update } = useActions();
+    const handler = () => update({ counter: { $set: counter ? counter + 1 : 1 } });
+    return (
+      <div>
+        <button onClick={handler}>Click</button>
+        <pre>counter: {counter}</pre>
+      </div>
+    );
+  };
+  return <C />;
+})
+
 //
 // Root
 //
@@ -35,12 +77,12 @@ import { createEntries } from './utils.js';
 
 storiesOf('Root', module)
 .add('Default', () => {
-  return <Root />;
+  return mkProviderDecorator({ storage: true })(() => <Root />);
 })
-.add('Clear client storage', () => {
+.add('Clear Storage', () => {
   const storyFn = async () => {
     await localforage.clear();
-    return <Root />;
+    return mkProviderDecorator({ storage: true })(() => <Root />);
   };
   return <AsyncStoryFnWrapper storyFn={storyFn} />;
 })
@@ -48,11 +90,9 @@ storiesOf('Root', module)
   // NOTE: Replaced state won't be cleared when story is changed,
   // so it needs to manually refresh browser if you go "Root > Default" story.
   const sharedUrl = 'https://www.youtube.com/watch?v=VsPE2ByYYyg';
-  window.history.replaceState(
-      {},
-      window.document.title,
-      window.location.href + `&share_target_text=${encodeURIComponent(sharedUrl)}`);
-  return <Root />;
+  const nextUrl = window.location.href + `&share_target_text=${encodeURIComponent(sharedUrl)}`;
+  window.history.replaceState({}, '', nextUrl);
+  return mkProviderDecorator({ storage: true })(() => <Root />);
 });
 
 //
@@ -64,29 +104,16 @@ storiesOf('App', module)
 .add('With Data', () => {
   const ttml1 = require('raw-loader!./fixtures/ru.ttml').default;
   const ttml2 = require('raw-loader!./fixtures/en.ttml').default;
-  // cf. https://www.youtube.com/watch?v=VsPE2ByYYyg
-  const videoId = 'VsPE2ByYYyg';
+  const videoId = 'VsPE2ByYYyg'; // cf. https://www.youtube.com/watch?v=VsPE2ByYYyg
   const entries = createEntries(ttml1, ttml2);
-  const props = {
-    playerData: {
-      videoId,
-      entries,
-    },
-    actions: { setModal: () => {} }
-  };
-  return <App {...props} />;
+  const initialCommand = {
+    playerData: { $set: { videoId, entries } },
+    userData: { $merge: { preference: { lang1: 'ru', lang2: 'en' } } }
+  }
+  return mkProviderDecorator({ initialCommand })(() => <App />);
 })
-.add('Empty', () => {
-  const videoId = null;
-  const entries = [];
-  const props = {
-    playerData: {
-      videoId,
-      entries,
-    },
-    actions: { setModal: () => {} }
-  };
-  return <App {...props} />;
+.add('Default', () => {
+  return mkProviderDecorator()(() => <App />);
 });
 
 //
@@ -95,21 +122,16 @@ storiesOf('App', module)
 import NewVideoForm from './components/NewVideoForm.js';
 
 storiesOf('NewVideoForm', module)
+.addDecorator(mkProviderDecorator())
 .add('Empty', () => {
   const props = {
     defaultVideoId: null,
-    actions: { update: console.log },
-    preference: { lang1: 'ru', lang2: 'en' }
   };
   return <NewVideoForm {...props} />;
 })
-.add('With Data', () => {
-  // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
-  const videoId = 'bVlFUcVNErs'
+.add('With defaultVideoId', () => {
   const props = {
-    defaultVideoId: videoId,
-    actions: { update: console.log },
-    preference: { lang1: 'ru', lang2: 'en' }
+    defaultVideoId: 'bVlFUcVNErs', // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
   };
   return <NewVideoForm {...props} />;
 });
@@ -124,12 +146,11 @@ storiesOf(LanguageSelectForm.name, module)
 .add('With Data', () => {
   // NOTE: this data is old one so the subtitle urls are invalid now.
   const subtitleInfo = require('./fixtures/subtitleInfo.json');
-  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, 'ru', 'en');
-  const props = {
-    subtitleInfo, subtitleUrl1, subtitleUrl2,
-    actions: { update: console.log },
-  };
-  return <LanguageSelectForm {...props} />;
+  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, 'ru', 'de');
+  const initialCommand = {
+    playerData: { $merge: { subtitleInfo, subtitleUrl1, subtitleUrl2 } }
+  }
+  return mkProviderDecorator({ initialCommand })(() => <LanguageSelectForm />);
 });
 
 //
@@ -138,17 +159,11 @@ storiesOf(LanguageSelectForm.name, module)
 import Settings from './components/Settings.js';
 
 storiesOf(Settings.name, module)
+.addDecorator(mkProviderDecorator({ initialCommand: {
+  userData: { preference: { $set: { lang1: 'ru', lang2: 'de' } }}
+}}))
 .add('Default', () => {
-  const props = {
-    userData: {
-      preference: {
-        lang1: 'ru',
-        lang2: 'en',
-      }
-    },
-    actions: { update: console.log },
-  };
-  return <Settings {...props} />;
+  return <Settings />;
 });
 
 
