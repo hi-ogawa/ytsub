@@ -89,7 +89,7 @@ storiesOf('Root', module)
 .add('From WebShare', () => {
   // NOTE: Replaced state won't be cleared when story is changed,
   // so it needs to manually refresh browser if you go "Root > Default" story.
-  const sharedUrl = 'https://www.youtube.com/watch?v=VsPE2ByYYyg';
+  const sharedUrl = 'https://www.youtube.com/watch?v=uIEw0hZfMos';
   const nextUrl = window.location.href + `&share_target_text=${encodeURIComponent(sharedUrl)}`;
   window.history.replaceState({}, '', nextUrl);
   return mkProviderDecorator({ storage: true })(() => <Root />);
@@ -102,9 +102,9 @@ import App from './components/App.js';
 
 storiesOf('App', module)
 .add('With Data', () => {
-  const ttml1 = require('raw-loader!./fixtures/ru.ttml').default;
-  const ttml2 = require('raw-loader!./fixtures/en.ttml').default;
-  const videoId = 'VsPE2ByYYyg'; // cf. https://www.youtube.com/watch?v=VsPE2ByYYyg
+  const ttml1 = require('raw-loader!./fixtures/example.ru.ttml').default;
+  const ttml2 = require('raw-loader!./fixtures/example.en.ttml').default;
+  const videoId = 'uIEw0hZfMos'; // cf. https://www.youtube.com/watch?v=uIEw0hZfMos
   const entries = createEntries(ttml1, ttml2);
   const initialCommand = {
     playerData: { $set: { videoId, entries } },
@@ -131,7 +131,7 @@ storiesOf('NewVideoForm', module)
 })
 .add('With defaultVideoId', () => {
   const props = {
-    defaultVideoId: 'bVlFUcVNErs', // cf. https://www.youtube.com/watch?v=bVlFUcVNErs
+    defaultVideoId: 'uIEw0hZfMos', // cf. https://www.youtube.com/watch?v=uIEw0hZfMos
   };
   return <NewVideoForm {...props} />;
 });

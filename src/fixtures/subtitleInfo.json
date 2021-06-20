@@ -2,435 +2,455 @@
   "tracks": [
     {
       "name": "English",
-      "url": "https://www.youtube.com/api/timedtext?v=bVlFUcVNErs&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&xorp=true&hl=en&ip=0.0.0.0&ipbits=0&expire=1570410778&sparams=ip,ipbits,expire,v,asr_langs,caps,xorp&signature=9D074A7D822BFF7A30518A86AC524B751405D97C.EE8597EC2FEB086C64E4A7FFD30669012293F4BC&key=yt8&lang=en&fmt=ttml",
+      "url": "https://www.youtube.com/api/timedtext?v=uIEw0hZfMos&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&exp=xftt&xoaf=4&hl=en&ip=0.0.0.0&ipbits=0&expire=1624218242&sparams=ip,ipbits,expire,v,asr_langs,caps,exp,xoaf&signature=67E0312632D2577DC7F2A797CA6789C5DB1B5C62.C6ACB7ED2785956BA072DA4374A615429082C9D2&key=yt8&lang=en&fmt=ttml",
       "vssId": ".en"
     },
     {
       "name": "Russian",
-      "url": "https://www.youtube.com/api/timedtext?v=bVlFUcVNErs&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&xorp=true&hl=en&ip=0.0.0.0&ipbits=0&expire=1570410778&sparams=ip,ipbits,expire,v,asr_langs,caps,xorp&signature=9D074A7D822BFF7A30518A86AC524B751405D97C.EE8597EC2FEB086C64E4A7FFD30669012293F4BC&key=yt8&lang=ru&fmt=ttml",
+      "url": "https://www.youtube.com/api/timedtext?v=uIEw0hZfMos&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&exp=xftt&xoaf=4&hl=en&ip=0.0.0.0&ipbits=0&expire=1624218242&sparams=ip,ipbits,expire,v,asr_langs,caps,exp,xoaf&signature=67E0312632D2577DC7F2A797CA6789C5DB1B5C62.C6ACB7ED2785956BA072DA4374A615429082C9D2&key=yt8&lang=ru&fmt=ttml",
       "vssId": ".ru"
     },
     {
       "name": "Russian (auto-generated)",
-      "url": "https://www.youtube.com/api/timedtext?v=bVlFUcVNErs&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&xorp=true&hl=en&ip=0.0.0.0&ipbits=0&expire=1570410778&sparams=ip,ipbits,expire,v,asr_langs,caps,xorp&signature=9D074A7D822BFF7A30518A86AC524B751405D97C.EE8597EC2FEB086C64E4A7FFD30669012293F4BC&key=yt8&kind=asr&lang=ru&fmt=ttml",
+      "url": "https://www.youtube.com/api/timedtext?v=uIEw0hZfMos&asr_langs=de,en,es,fr,it,ja,ko,nl,pt,ru&caps=asr&exp=xftt&xoaf=4&hl=en&ip=0.0.0.0&ipbits=0&expire=1624218242&sparams=ip,ipbits,expire,v,asr_langs,caps,exp,xoaf&signature=67E0312632D2577DC7F2A797CA6789C5DB1B5C62.C6ACB7ED2785956BA072DA4374A615429082C9D2&key=yt8&kind=asr&lang=ru&fmt=ttml",
       "vssId": "a.ru"
     }
   ],
   "translations": [
     {
-      "name": "Afrikaans",
+      "name": "Afrikaans (auto-translated)",
       "code": "af"
     },
     {
-      "name": "Albanian",
+      "name": "Albanian (auto-translated)",
       "code": "sq"
     },
     {
-      "name": "Amharic",
+      "name": "Amharic (auto-translated)",
       "code": "am"
     },
     {
-      "name": "Arabic",
+      "name": "Arabic (auto-translated)",
       "code": "ar"
     },
     {
-      "name": "Armenian",
+      "name": "Armenian (auto-translated)",
       "code": "hy"
     },
     {
-      "name": "Azerbaijani",
+      "name": "Azerbaijani (auto-translated)",
       "code": "az"
     },
     {
-      "name": "Bangla",
+      "name": "Bangla (auto-translated)",
       "code": "bn"
     },
     {
-      "name": "Basque",
+      "name": "Basque (auto-translated)",
       "code": "eu"
     },
     {
-      "name": "Belarusian",
+      "name": "Belarusian (auto-translated)",
       "code": "be"
     },
     {
-      "name": "Bosnian",
+      "name": "Bosnian (auto-translated)",
       "code": "bs"
     },
     {
-      "name": "Bulgarian",
+      "name": "Bulgarian (auto-translated)",
       "code": "bg"
     },
     {
-      "name": "Burmese",
+      "name": "Burmese (auto-translated)",
       "code": "my"
     },
     {
-      "name": "Catalan",
+      "name": "Catalan (auto-translated)",
       "code": "ca"
     },
     {
-      "name": "Cebuano",
+      "name": "Cebuano (auto-translated)",
       "code": "ceb"
     },
     {
-      "name": "Chinese (Simplified)",
+      "name": "Chinese (Simplified) (auto-translated)",
       "code": "zh-Hans"
     },
     {
-      "name": "Chinese (Traditional)",
+      "name": "Chinese (Traditional) (auto-translated)",
       "code": "zh-Hant"
     },
     {
-      "name": "Corsican",
+      "name": "Corsican (auto-translated)",
       "code": "co"
     },
     {
-      "name": "Croatian",
+      "name": "Croatian (auto-translated)",
       "code": "hr"
     },
     {
-      "name": "Czech",
+      "name": "Czech (auto-translated)",
       "code": "cs"
     },
     {
-      "name": "Danish",
+      "name": "Danish (auto-translated)",
       "code": "da"
     },
     {
-      "name": "Dutch",
+      "name": "Dutch (auto-translated)",
       "code": "nl"
     },
     {
-      "name": "English",
+      "name": "English (auto-translated)",
       "code": "en"
     },
     {
-      "name": "Esperanto",
+      "name": "Esperanto (auto-translated)",
       "code": "eo"
     },
     {
-      "name": "Estonian",
+      "name": "Estonian (auto-translated)",
       "code": "et"
     },
     {
-      "name": "Filipino",
+      "name": "Filipino (auto-translated)",
       "code": "fil"
     },
     {
-      "name": "Finnish",
+      "name": "Finnish (auto-translated)",
       "code": "fi"
     },
     {
-      "name": "French",
+      "name": "French (auto-translated)",
       "code": "fr"
     },
     {
-      "name": "Galician",
+      "name": "Galician (auto-translated)",
       "code": "gl"
     },
     {
-      "name": "Georgian",
+      "name": "Georgian (auto-translated)",
       "code": "ka"
     },
     {
-      "name": "German",
+      "name": "German (auto-translated)",
       "code": "de"
     },
     {
-      "name": "Greek",
+      "name": "Greek (auto-translated)",
       "code": "el"
     },
     {
-      "name": "Gujarati",
+      "name": "Gujarati (auto-translated)",
       "code": "gu"
     },
     {
-      "name": "Haitian Creole",
+      "name": "Haitian Creole (auto-translated)",
       "code": "ht"
     },
     {
-      "name": "Hausa",
+      "name": "Hausa (auto-translated)",
       "code": "ha"
     },
     {
-      "name": "Hawaiian",
+      "name": "Hawaiian (auto-translated)",
       "code": "haw"
     },
     {
-      "name": "Hebrew",
+      "name": "Hebrew (auto-translated)",
       "code": "iw"
     },
     {
-      "name": "Hindi",
+      "name": "Hindi (auto-translated)",
       "code": "hi"
     },
     {
-      "name": "Hmong",
+      "name": "Hmong (auto-translated)",
       "code": "hmn"
     },
     {
-      "name": "Hungarian",
+      "name": "Hungarian (auto-translated)",
       "code": "hu"
     },
     {
-      "name": "Icelandic",
+      "name": "Icelandic (auto-translated)",
       "code": "is"
     },
     {
-      "name": "Igbo",
+      "name": "Igbo (auto-translated)",
       "code": "ig"
     },
     {
-      "name": "Indonesian",
+      "name": "Indonesian (auto-translated)",
       "code": "id"
     },
     {
-      "name": "Irish",
+      "name": "Irish (auto-translated)",
       "code": "ga"
     },
     {
-      "name": "Italian",
+      "name": "Italian (auto-translated)",
       "code": "it"
     },
     {
-      "name": "Japanese",
+      "name": "Japanese (auto-translated)",
       "code": "ja"
     },
     {
-      "name": "Javanese",
+      "name": "Javanese (auto-translated)",
       "code": "jv"
     },
     {
-      "name": "Kannada",
+      "name": "Kannada (auto-translated)",
       "code": "kn"
     },
     {
-      "name": "Kazakh",
+      "name": "Kazakh (auto-translated)",
       "code": "kk"
     },
     {
-      "name": "Khmer",
+      "name": "Khmer (auto-translated)",
       "code": "km"
     },
     {
-      "name": "Korean",
+      "name": "Kinyarwanda (auto-translated)",
+      "code": "rw"
+    },
+    {
+      "name": "Korean (auto-translated)",
       "code": "ko"
     },
     {
-      "name": "Kurdish",
+      "name": "Kurdish (auto-translated)",
       "code": "ku"
     },
     {
-      "name": "Kyrgyz",
+      "name": "Kyrgyz (auto-translated)",
       "code": "ky"
     },
     {
-      "name": "Lao",
+      "name": "Lao (auto-translated)",
       "code": "lo"
     },
     {
-      "name": "Latin",
+      "name": "Latin (auto-translated)",
       "code": "la"
     },
     {
-      "name": "Latvian",
+      "name": "Latvian (auto-translated)",
       "code": "lv"
     },
     {
-      "name": "Lithuanian",
+      "name": "Lithuanian (auto-translated)",
       "code": "lt"
     },
     {
-      "name": "Luxembourgish",
+      "name": "Luxembourgish (auto-translated)",
       "code": "lb"
     },
     {
-      "name": "Macedonian",
+      "name": "Macedonian (auto-translated)",
       "code": "mk"
     },
     {
-      "name": "Malagasy",
+      "name": "Malagasy (auto-translated)",
       "code": "mg"
     },
     {
-      "name": "Malay",
+      "name": "Malay (auto-translated)",
       "code": "ms"
     },
     {
-      "name": "Malayalam",
+      "name": "Malayalam (auto-translated)",
       "code": "ml"
     },
     {
-      "name": "Maltese",
+      "name": "Maltese (auto-translated)",
       "code": "mt"
     },
     {
-      "name": "Maori",
+      "name": "Maori (auto-translated)",
       "code": "mi"
     },
     {
-      "name": "Marathi",
+      "name": "Marathi (auto-translated)",
       "code": "mr"
     },
     {
-      "name": "Mongolian",
+      "name": "Mongolian (auto-translated)",
       "code": "mn"
     },
     {
-      "name": "Nepali",
+      "name": "Nepali (auto-translated)",
       "code": "ne"
     },
     {
-      "name": "Norwegian",
+      "name": "Norwegian (auto-translated)",
       "code": "no"
     },
     {
-      "name": "Nyanja",
+      "name": "Nyanja (auto-translated)",
       "code": "ny"
     },
     {
-      "name": "Pashto",
+      "name": "Odia (auto-translated)",
+      "code": "or"
+    },
+    {
+      "name": "Pashto (auto-translated)",
       "code": "ps"
     },
     {
-      "name": "Persian",
+      "name": "Persian (auto-translated)",
       "code": "fa"
     },
     {
-      "name": "Polish",
+      "name": "Polish (auto-translated)",
       "code": "pl"
     },
     {
-      "name": "Portuguese",
+      "name": "Portuguese (auto-translated)",
       "code": "pt"
     },
     {
-      "name": "Punjabi",
+      "name": "Punjabi (auto-translated)",
       "code": "pa"
     },
     {
-      "name": "Romanian",
+      "name": "Romanian (auto-translated)",
       "code": "ro"
     },
     {
-      "name": "Russian",
+      "name": "Russian (auto-translated)",
       "code": "ru"
     },
     {
-      "name": "Samoan",
+      "name": "Samoan (auto-translated)",
       "code": "sm"
     },
     {
-      "name": "Scottish Gaelic",
+      "name": "Scottish Gaelic (auto-translated)",
       "code": "gd"
     },
     {
-      "name": "Serbian",
+      "name": "Serbian (auto-translated)",
       "code": "sr"
     },
     {
-      "name": "Shona",
+      "name": "Shona (auto-translated)",
       "code": "sn"
     },
     {
-      "name": "Sindhi",
+      "name": "Sindhi (auto-translated)",
       "code": "sd"
     },
     {
-      "name": "Sinhala",
+      "name": "Sinhala (auto-translated)",
       "code": "si"
     },
     {
-      "name": "Slovak",
+      "name": "Slovak (auto-translated)",
       "code": "sk"
     },
     {
-      "name": "Slovenian",
+      "name": "Slovenian (auto-translated)",
       "code": "sl"
     },
     {
-      "name": "Somali",
+      "name": "Somali (auto-translated)",
       "code": "so"
     },
     {
-      "name": "Southern Sotho",
+      "name": "Southern Sotho (auto-translated)",
       "code": "st"
     },
     {
-      "name": "Spanish",
+      "name": "Spanish (auto-translated)",
       "code": "es"
     },
     {
-      "name": "Sundanese",
+      "name": "Sundanese (auto-translated)",
       "code": "su"
     },
     {
-      "name": "Swahili",
+      "name": "Swahili (auto-translated)",
       "code": "sw"
     },
     {
-      "name": "Swedish",
+      "name": "Swedish (auto-translated)",
       "code": "sv"
     },
     {
-      "name": "Tajik",
+      "name": "Tajik (auto-translated)",
       "code": "tg"
     },
     {
-      "name": "Tamil",
+      "name": "Tamil (auto-translated)",
       "code": "ta"
     },
     {
-      "name": "Telugu",
+      "name": "Tatar (auto-translated)",
+      "code": "tt"
+    },
+    {
+      "name": "Telugu (auto-translated)",
       "code": "te"
     },
     {
-      "name": "Thai",
+      "name": "Thai (auto-translated)",
       "code": "th"
     },
     {
-      "name": "Turkish",
+      "name": "Turkish (auto-translated)",
       "code": "tr"
     },
     {
-      "name": "Ukrainian",
+      "name": "Turkmen (auto-translated)",
+      "code": "tk"
+    },
+    {
+      "name": "Ukrainian (auto-translated)",
       "code": "uk"
     },
     {
-      "name": "Urdu",
+      "name": "Urdu (auto-translated)",
       "code": "ur"
     },
     {
-      "name": "Uzbek",
+      "name": "Uyghur (auto-translated)",
+      "code": "ug"
+    },
+    {
+      "name": "Uzbek (auto-translated)",
       "code": "uz"
     },
     {
-      "name": "Vietnamese",
+      "name": "Vietnamese (auto-translated)",
       "code": "vi"
     },
     {
-      "name": "Welsh",
+      "name": "Welsh (auto-translated)",
       "code": "cy"
     },
     {
-      "name": "Western Frisian",
+      "name": "Western Frisian (auto-translated)",
       "code": "fy"
     },
     {
-      "name": "Xhosa",
+      "name": "Xhosa (auto-translated)",
       "code": "xh"
     },
     {
-      "name": "Yiddish",
+      "name": "Yiddish (auto-translated)",
       "code": "yi"
     },
     {
-      "name": "Yoruba",
+      "name": "Yoruba (auto-translated)",
       "code": "yo"
     },
     {
-      "name": "Zulu",
+      "name": "Zulu (auto-translated)",
       "code": "zu"
     }
   ]
