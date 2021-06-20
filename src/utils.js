@@ -182,11 +182,19 @@ export const findPreferredSubtitles = (subtitleInfo, lang1, lang2) => {
   return  { subtitleUrl1, subtitleUrl2 }
 };
 
+// cf. https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L283
+const PLAYER_REPONSE_REGEX = /var ytInitialPlayerResponse = ({.+?});/;
+
+const extractPlayerResponse = (content) => {
+  const match = content.match(PLAYER_REPONSE_REGEX);
+  if (!match) {
+    console.error("[youtube-api] playerResponse not found");
+  }
+  return JSON.parse(match[1]);
+}
 
 const extractSubtitleInfo = (content) => {
-  const mobj = content.match(/;ytplayer\.config\s*=\s*({.+?});ytplayer/);
-  const config = JSON.parse(mobj[1]);
-  const player_response = JSON.parse(config.args.player_response);
+  const player_response = extractPlayerResponse(content);
   let tracks = player_response.captions.playerCaptionsTracklistRenderer.captionTracks;
   let translations = player_response.captions.playerCaptionsTracklistRenderer.translationLanguages;
   return {
@@ -203,17 +211,23 @@ const extractSubtitleInfo = (content) => {
 }
 
 // cf. https://github.com/hi-ogawa/apps-script-proxy
-const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbwXJFqrRvPjvkNY5q1DNsIQuEG3hZVtUb_OFMJzhaYmxlw9IAN9qT-_Tk7MpruNdkWu/exec';
-const fetchViaProxy = (url, { headers }) => {
+const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbxEFXwjhCq6Iu8_dNXI1Cc6uZbVAGgaO1nBOY2wpuxZRDx9Fihsycdm16erectNJ7UaDQ/exec'
+const fetchViaProxy = async (url, options) => {
   const _url = encodeURIComponent(url);
-  const _jsonParams = encodeURIComponent(JSON.stringify({ headers }));
-  const proxyUrl = `${PROXY_BASE_URL}?url=${_url}&jsonParams=${_jsonParams}`;
-  return fetch(proxyUrl);
+  const _options = encodeURIComponent(JSON.stringify(options));
+  const response = await fetch(`${PROXY_BASE_URL}?url=${_url}&options=${_options}`);
+  if (!response.ok) {
+    throw new Error('fetchViaProxy error: request failure');
+  }
+  const json = await response.json();
+  if (json.status !== 'success') {
+    throw new Error(`fetchViaProxy error: proxy failure: ${json.content}`);
+  }
+  return json.content;
 }
 
 export const getYoutubeSubtitleInfo = (id) =>
   fetchViaProxy(`https://www.youtube.com/watch?v=${id}`, { headers: { 'Accept-Language': 'en-US,en' } })
-  .then(resp => resp.text())
   .then(extractSubtitleInfo);
 
 export const getEntries = async (subtitleUrl1, subtitleUrl2) => {

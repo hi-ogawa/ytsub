@@ -1,12 +1,12 @@
 {
-  "type": "module",
   "scripts": {
     "storybook": "start-storybook -p 9090",
     "node-utils": "webpack ./src/utils.js --mode=development --output-library-target commonjs -o src/utils.node.js",
-    "build": "rm -r build && webpack --progress --config ./webpack.config.production.js",
-    "deploy": "now ./build -A ../now.json --debug",
+    "build": "rm -rf build && webpack --progress --config ./webpack.config.production.js",
+    "deploy": "cd build && cp -rf ../.vercel ../vercel.json . && vercel deploy",
+    "demo": "serve build",
     "build:deploy": "npm run build && npm run deploy",
-    "build:demo": "http-server build"
+    "build:demo": "npm run build && npm run demo"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
@@ -15,20 +15,21 @@
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",
-    "http-server": "^0.11.1",
     "immutability-helper": "^3.0.1",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
-    "node-sass": "^4.12.0",
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "rxjs": "^6.5.3",
+    "sass": "^1.35.1",
     "sass-loader": "^8.0.0",
+    "serve": "^12.0.0",
     "sprintf-js": "^1.1.2",
     "style-loader": "^1.0.0",
+    "vercel": "^23.0.1",
     "webpack-cli": "^3.3.9"
   }
 }

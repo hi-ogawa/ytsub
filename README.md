@@ -1,6 +1,6 @@
 Youtube Subtitles Viewer
 
-https://ytsub.hiogawa.now.sh
+https://ytsub-hiogawa.vercel.app
 
 TODO
 
