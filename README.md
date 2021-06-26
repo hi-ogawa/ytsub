@@ -4,8 +4,8 @@ https://ytsub-hiogawa.vercel.app
 
 ```
 # Development
-yarn install
-npm run storybook # then play with "App > With Data"
+npm install
+npm run storybook # then play with "Root > Default"
 
 # Deployment
 npm run build:deploy
