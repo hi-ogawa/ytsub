@@ -27,10 +27,12 @@ const App = () => {
   //
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
-  const [{ loopingEntries, currentTime, playing, }, __, ___, mergeState] = useUpdate({
+  const currentEntryRef = useRef(null);
+  const [{ loopingEntries, currentTime, playing, autoScroll }, __, ___, mergeState] = useUpdate({
     loopingEntries: [],
     currentTime: 0,
     playing: false,
+    autoScroll: false,
   });
   const currentEntry = _.reverse(Array.from(entries)).find(e => e.begin <= currentTime);
 
@@ -79,6 +81,20 @@ const App = () => {
       }
     }
   }, [currentTime, loopingEntries])
+
+  //
+  // Handle auto scroll
+  //
+  useEffect(() => {
+    if (!autoScroll || !currentEntry || !currentEntryRef.current) { return; }
+    const child = currentEntryRef.current;
+    const parent = child.parentElement;
+    const hp = parent.clientHeight;
+    const hc = child.clientHeight;
+    const op = parent.offsetTop;
+    const oc = child.offsetTop;
+    parent.scroll({ top: (oc - op) + hc / 2 - hp / 2, behavior: 'smooth' })
+  }, [autoScroll, currentEntry])
 
   //
   // Callbacks
@@ -137,6 +153,7 @@ const App = () => {
                 loop: loopingEntries.includes(entry),
                 rate: false,
               })}
+              ref={entry === currentEntry ? currentEntryRef : undefined}
             >
               <div className="entry__header">
                 {/* TODO: Not implemented */}
@@ -181,7 +198,9 @@ const App = () => {
           <div onClick={() => setModal(<Settings />)}>
             <i className="material-icons">settings</i>
           </div>
-          { ['?', '?'].map((v, i) => <div key={i} className="disabled">{v}</div>) }
+          <div className={CN({enabled: autoScroll})} onClick={() => mergeState({ autoScroll: !autoScroll })}>
+            <i className="material-icons">double_arrow</i>
+          </div>
         </div>
       </div>
     </div>

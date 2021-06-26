@@ -217,5 +217,11 @@
         color: $grey-4;
       }
     }
+
+    &.enabled {
+      i {
+        color: #44f;
+      }
+    }
   }
 }
