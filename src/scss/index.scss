@@ -1,6 +1,10 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0; padding: 0; border: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
   font: inherit;
 }
 html {
@@ -11,13 +15,13 @@ body {
   font-family: "Roboto";
 }
 
-@import './variables.scss';
-@import './mixins.scss';
-@import './story.scss';
+@import "./variables.scss";
+@import "./mixins.scss";
+@import "./story.scss";
 
-@import './root.scss';
-@import './app.scss';
-@import './modal.scss';
-@import './new-video-form.scss';
-@import './language-select-form.scss';
-@import './settings.scss';
+@import "./root.scss";
+@import "./app.scss";
+@import "./modal.scss";
+@import "./new-video-form.scss";
+@import "./language-select-form.scss";
+@import "./settings.scss";

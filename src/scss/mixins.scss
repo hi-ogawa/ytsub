@@ -28,12 +28,12 @@
   align-items: center;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     display: none;
     @include spinner {
       @content;
-    };
+    }
   }
 
   &#{$switch-query} {

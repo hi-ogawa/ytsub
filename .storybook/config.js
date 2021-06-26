@@ -1,7 +1,7 @@
-import { configure } from '@storybook/react';
+import { configure } from "@storybook/react";
 
 const loaderFn = () => {
-  require('../src/story.js');
-}
+  require("../src/story.js");
+};
 
 configure(loaderFn, module);

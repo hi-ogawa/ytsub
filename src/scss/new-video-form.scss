@@ -39,7 +39,7 @@
         flex-direction: row;
         align-items: center;
 
-        @include spinner-container('.loading')
+        @include spinner-container(".loading");
       }
     }
   }
@@ -87,7 +87,7 @@
       font-weight: 500;
       font-size: 15px;
       cursor: pointer;
-      @include spinner-container('.loading');
+      @include spinner-container(".loading");
 
       &[disabled] {
         color: #efefef;

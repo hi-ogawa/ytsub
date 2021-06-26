@@ -1,124 +1,153 @@
-import React from 'react';
-import CN from 'classnames';
+import React from "react";
+import CN from "classnames";
 
-import { useGetSelector, useActions } from '../stateDef.js'
-import { parseVideoId, getYoutubeSubtitleInfo, findPreferredSubtitles, getEntries,
-         useLoader, useUpdate } from '../utils.js';
+import { useGetSelector, useActions } from "../stateDef.js";
+import {
+  parseVideoId,
+  getYoutubeSubtitleInfo,
+  findPreferredSubtitles,
+  getEntries,
+  useLoader,
+  useUpdate,
+} from "../utils.js";
 
 const NewVideoForm = ({ defaultVideoId }) => {
   const { merge: mergeRoot } = useActions();
-  const { lang1, lang2 } = useGetSelector('userData.preference');
+  const { lang1, lang2 } = useGetSelector("userData.preference");
 
   const [state, __, ___, mergeState] = useUpdate({
-    videoId: defaultVideoId || '',
+    videoId: defaultVideoId || "",
     subtitleInfo: { tracks: [], translations: [] },
-    subtitleUrl1: '',
-    subtitleUrl2: ''
+    subtitleUrl1: "",
+    subtitleUrl2: "",
   });
 
-  const [_getYoutubeSubtitleInfo, { loading: loading1 }] = useLoader(getYoutubeSubtitleInfo)
-  const [_getEntries, { loading: loading2 }] = useLoader(getEntries)
+  const [_getYoutubeSubtitleInfo, { loading: loading1 }] = useLoader(
+    getYoutubeSubtitleInfo
+  );
+  const [_getEntries, { loading: loading2 }] = useLoader(getEntries);
 
   const videoInputHandler = async () => {
     const videoId = parseVideoId(state.videoId);
     if (!videoId) {
-      window.alert('Unsupported input');
+      window.alert("Unsupported input");
       return false;
     } else {
-      const { value: subtitleInfo, state: { error } } = await _getYoutubeSubtitleInfo(videoId)
+      const {
+        value: subtitleInfo,
+        state: { error },
+      } = await _getYoutubeSubtitleInfo(videoId);
       if (error) {
         console.error(error.message);
-        window.alert('Unsupported video');
+        window.alert("Unsupported video");
         return false;
       }
-      const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, lang1, lang2);
+      const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(
+        subtitleInfo,
+        lang1,
+        lang2
+      );
       mergeState({ videoId, subtitleInfo, subtitleUrl1, subtitleUrl2 });
     }
     return true;
-  }
+  };
 
   const playHandler = async () => {
-    const { value: entries, state: { error } } = await _getEntries(state.subtitleUrl1, state.subtitleUrl2);
+    const {
+      value: entries,
+      state: { error },
+    } = await _getEntries(state.subtitleUrl1, state.subtitleUrl2);
     if (error) {
       console.error(error.message);
-      return window.alert('Failed to load subtitles');
+      return window.alert("Failed to load subtitles");
     }
     mergeRoot({
       playerData: {
         entries,
-        ...state
+        ...state,
       },
-      modal: null
+      modal: null,
     });
-  }
+  };
 
   return (
-    <div id='new-video-form-container'>
+    <div id="new-video-form-container">
       <h1>Load Video</h1>
-      <div className='video-input'>
+      <div className="video-input">
         <label>Youtube Video</label>
-        <div className='input-grp'>
+        <div className="input-grp">
           <input
             value={state.videoId}
             onChange={(e) => mergeState({ videoId: e.target.value })}
             onKeyUp={(e) => e.key === "Enter" && videoInputHandler()}
-            placeholder='URL or ID'
+            placeholder="URL or ID"
           />
-          <button onClick={videoInputHandler} className={CN({ loading: loading1 })}>
+          <button
+            onClick={videoInputHandler}
+            className={CN({ loading: loading1 })}
+          >
             <i className="material-icons">search</i>
           </button>
         </div>
       </div>
 
-      <div className='language-select'>
+      <div className="language-select">
         <label>Languages</label>
         <select
-          value={state.subtitleUrl1 || 'default'}
+          value={state.subtitleUrl1 || "default"}
           onChange={(e) => mergeState({ subtitleUrl1: e.target.value })}
           disabled={state.subtitleInfo.tracks.length == 0}
         >
-          <option value='default' disabled>-- 1st Language --</option>
-          {
-            state.subtitleInfo.tracks.map(t =>
-              <option key={t.url} value={t.url}>{t.name}</option>)
-          }
-          {
-            state.subtitleInfo.tracks.map(t =>
-              <optgroup key={t.url} label={`-- Auto-translations from ${t.name}`}>
-                {
-                  state.subtitleInfo.translations.map(tr =>
-                    <option key={tr.code} value={`${t.url}&tlang=${tr.code}`}>{tr.name}</option>)
-                }
-              </optgroup>)
-          }
+          <option value="default" disabled>
+            -- 1st Language --
+          </option>
+          {state.subtitleInfo.tracks.map((t) => (
+            <option key={t.url} value={t.url}>
+              {t.name}
+            </option>
+          ))}
+          {state.subtitleInfo.tracks.map((t) => (
+            <optgroup key={t.url} label={`-- Auto-translations from ${t.name}`}>
+              {state.subtitleInfo.translations.map((tr) => (
+                <option key={tr.code} value={`${t.url}&tlang=${tr.code}`}>
+                  {tr.name}
+                </option>
+              ))}
+            </optgroup>
+          ))}
         </select>
 
         <select
-          value={state.subtitleUrl2 || 'default'}
+          value={state.subtitleUrl2 || "default"}
           onChange={(e) => mergeState({ subtitleUrl2: e.target.value })}
           disabled={state.subtitleInfo.tracks.length == 0}
         >
-          <option value='default' disabled>-- 2nd Language --</option>
-          {
-            state.subtitleInfo.tracks.map(t =>
-              <option key={t.url} value={t.url}>{t.name}</option>)
-          }
-          {
-            state.subtitleInfo.tracks.map(t =>
-              <optgroup key={t.url} label={`-- Auto-translations from ${t.name}`}>
-                {
-                  state.subtitleInfo.translations.map(tr =>
-                    <option key={tr.code} value={`${t.url}&tlang=${tr.code}`}>{tr.name}</option>)
-                }
-              </optgroup>)
-          }
+          <option value="default" disabled>
+            -- 2nd Language --
+          </option>
+          {state.subtitleInfo.tracks.map((t) => (
+            <option key={t.url} value={t.url}>
+              {t.name}
+            </option>
+          ))}
+          {state.subtitleInfo.tracks.map((t) => (
+            <optgroup key={t.url} label={`-- Auto-translations from ${t.name}`}>
+              {state.subtitleInfo.translations.map((tr) => (
+                <option key={tr.code} value={`${t.url}&tlang=${tr.code}`}>
+                  {tr.name}
+                </option>
+              ))}
+            </optgroup>
+          ))}
         </select>
       </div>
 
-      <div className='play-action'>
+      <div className="play-action">
         <button
           onClick={playHandler}
-          disabled={!(state.videoId && state.subtitleUrl1 && state.subtitleUrl2)}
+          disabled={
+            !(state.videoId && state.subtitleUrl1 && state.subtitleUrl2)
+          }
           className={CN({ loading: loading2 })}
         >
           <span>PLAY</span>
@@ -127,6 +156,6 @@ const NewVideoForm = ({ defaultVideoId }) => {
       </div>
     </div>
   );
-}
+};
 
 export default NewVideoForm;

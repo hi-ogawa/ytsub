@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
-import CN from 'classnames';
+import React, { useRef, useState, useEffect } from "react";
+import CN from "classnames";
 
-import { useGetSelector, useActions } from '../stateDef.js'
+import { useGetSelector, useActions } from "../stateDef.js";
 
-const Modal= () => {
-  const content = useGetSelector('modal');
+const Modal = () => {
+  const content = useGetSelector("modal");
   const { setModal } = useActions();
 
   const nodeRef = useRef(null);
@@ -19,23 +19,23 @@ const Modal= () => {
       const timeoutId = window.setTimeout(() => setVisible(false), 300);
       return () => window.clearTimeout(timeoutId);
     }
-  }, [ content ]);
+  }, [content]);
 
   return (
     <div
-      id='modal'
+      id="modal"
       className={CN({ visible, fadeIn, fadeOut })}
       ref={nodeRef}
-      onClick={e => e.target === nodeRef.current && setModal(null)}
+      onClick={(e) => e.target === nodeRef.current && setModal(null)}
     >
-      <div id='modal-inner'>
-        <div id='close-modal' onClick={() => setModal(null)}>
-          <i className='material-icons'>close</i>
+      <div id="modal-inner">
+        <div id="close-modal" onClick={() => setModal(null)}>
+          <i className="material-icons">close</i>
         </div>
-        { content }
+        {content}
       </div>
     </div>
   );
-}
+};
 
 export default Modal;

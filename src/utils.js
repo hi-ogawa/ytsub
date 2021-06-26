@@ -1,21 +1,21 @@
 // NOTE: This file is loadable to nodejs (cf. npm run node-utils)
-import { useState, useReducer } from 'react';
-import _ from 'lodash';
-import { sprintf } from 'sprintf-js';
-import { interval } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
-import update from 'immutability-helper';
+import { useState, useReducer } from "react";
+import _ from "lodash";
+import { sprintf } from "sprintf-js";
+import { interval } from "rxjs";
+import { map, distinctUntilChanged } from "rxjs/operators";
+import update from "immutability-helper";
 
 //
 // Misc utility
 //
 
-export const ASSERT = (bool, message) => bool || window.alert(message)
+export const ASSERT = (bool, message) => bool || window.alert(message);
 
 export const stopProp = (f) => (e) => {
   e.stopPropagation();
   return f(e);
-}
+};
 
 // Inspired by "useMutation" from apollo-client
 export const useLoader = (origF /* promise returning function */) => {
@@ -37,9 +37,9 @@ export const useLoader = (origF /* promise returning function */) => {
         return { value: null, state: nextState };
       }
     );
-  }
-  return [ newF, state ];
-}
+  };
+  return [newF, state];
+};
 
 // Implement `updateState` via reducer dispatch so that
 // it won't use "old state" when it's invoked in closure (e.g. in promise handler).
@@ -47,19 +47,24 @@ export const useLoader = (origF /* promise returning function */) => {
 // `mergeState` is just for convinience.
 export const useUpdate = (initialState) => {
   const reducer = (state, action) => {
-    if (action.type === 'UPDATE') {
+    if (action.type === "UPDATE") {
       return update(state, action.command);
     }
-    if (action.type === 'GET_STATE') {
+    if (action.type === "GET_STATE") {
       action.loophole(state);
       return state;
     }
-  }
+  };
   const [state, dispatch] = useReducer(reducer, initialState);
-  const updateState = (command) => dispatch({ type: 'UPDATE', command });
+  const updateState = (command) => dispatch({ type: "UPDATE", command });
   const getState = () => {
     let currentState;
-    dispatch({ type: 'GET_STATE', loophole: (state) => { currentState = state; } });
+    dispatch({
+      type: "GET_STATE",
+      loophole: (state) => {
+        currentState = state;
+      },
+    });
     return currentState;
   };
   const mergeState = (next) => updateState({ $merge: next });
@@ -70,21 +75,25 @@ export const useUpdate = (initialState) => {
 // Youtube iframe wrapper
 //
 
-const getYoutubeIframeAPI = _.memoize(() => new Promise((resolve) => {
-  window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+const getYoutubeIframeAPI = _.memoize(
+  () =>
+    new Promise((resolve) => {
+      window.onYouTubeIframeAPIReady = () => resolve(window.YT);
 
-  let script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.async = true;
-  script.src = 'https://www.youtube.com/iframe_api';
-  let firstScript = document.getElementsByTagName('script')[0];
-  firstScript.parentNode.insertBefore(script, firstScript);
-}));
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.async = true;
+      script.src = "https://www.youtube.com/iframe_api";
+      let firstScript = document.getElementsByTagName("script")[0];
+      firstScript.parentNode.insertBefore(script, firstScript);
+    })
+);
 
 // cf. https://developers.google.com/youtube/iframe_api_reference
 export class Player {
   constructor(node, options) {
-    this.readyPromise = null; this.ready = false;
+    this.readyPromise = null;
+    this.ready = false;
     this.YT = null;
     this.player = null;
     this.readyPromise = this.initialize(node, options);
@@ -97,8 +106,8 @@ export class Player {
           onReady: () => {
             this.ready = true;
             resolve();
-          }
-        }
+          },
+        },
       });
       this.player = new this.YT.Player(node, options);
     });
@@ -120,7 +129,7 @@ export class Player {
     return {
       currentTime: this.player.getCurrentTime(),
       playing: this.player.getPlayerState() == 1,
-    }
+    };
   }
 
   seekTo(sec) {
@@ -149,7 +158,7 @@ export const parseVideoId = (value) => {
     let url;
     try {
       url = new URL(value);
-      if (url.hostname == 'youtu.be') {
+      if (url.hostname == "youtu.be") {
         videoId = url.pathname.substr(1);
       } else {
         videoId = url.search.match(/v=(.{11})/)[1];
@@ -159,12 +168,12 @@ export const parseVideoId = (value) => {
     }
   }
   return videoId;
-}
+};
 
 export const findPreferredSubtitles = (subtitleInfo, lang1, lang2) => {
   const { tracks } = subtitleInfo;
 
-  let subtitle1
+  let subtitle1;
   subtitle1 = _.find(tracks, { vssId: `.${lang1}` }); // Look for manually made subtitle
   if (!subtitle1) {
     subtitle1 = _.find(tracks, { vssId: `a.${lang1}` }); // Otherwise, use machine speech recognition
@@ -175,11 +184,11 @@ export const findPreferredSubtitles = (subtitleInfo, lang1, lang2) => {
   const subtitleUrl1 = subtitle1.url;
 
   let subtitle2 = _.find(tracks, { vssId: `.${lang2}` }); // Look for manually made subtitle
-  let subtitleUrl2 = _.get(subtitle2, 'url');
+  let subtitleUrl2 = _.get(subtitle2, "url");
   if (!subtitleUrl2) {
     subtitleUrl2 = `${subtitleUrl1}&tlang=${lang2}`; // Otherwise, use machine translation
   }
-  return  { subtitleUrl1, subtitleUrl2 }
+  return { subtitleUrl1, subtitleUrl2 };
 };
 
 // cf. https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L283
@@ -191,76 +200,89 @@ const extractPlayerResponse = (content) => {
     console.error("[youtube-api] playerResponse not found");
   }
   return JSON.parse(match[1]);
-}
+};
 
 const extractSubtitleInfo = (content) => {
   const player_response = extractPlayerResponse(content);
-  let tracks = player_response.captions.playerCaptionsTracklistRenderer.captionTracks;
-  let translations = player_response.captions.playerCaptionsTracklistRenderer.translationLanguages;
+  let tracks =
+    player_response.captions.playerCaptionsTracklistRenderer.captionTracks;
+  let translations =
+    player_response.captions.playerCaptionsTracklistRenderer
+      .translationLanguages;
   return {
-    tracks: tracks.map(t => ({
+    tracks: tracks.map((t) => ({
       name: t.name.simpleText,
       url: `${t.baseUrl}&fmt=ttml`,
       vssId: t.vssId,
     })),
-    translations: translations.map(t => ({
+    translations: translations.map((t) => ({
       name: `${t.languageName.simpleText} (auto-translated)`,
-      code: t.languageCode
-    }))
+      code: t.languageCode,
+    })),
   };
-}
+};
 
 // cf. https://github.com/hi-ogawa/apps-script-proxy
-const PROXY_BASE_URL = 'https://script.google.com/macros/s/AKfycbxEFXwjhCq6Iu8_dNXI1Cc6uZbVAGgaO1nBOY2wpuxZRDx9Fihsycdm16erectNJ7UaDQ/exec'
+const PROXY_BASE_URL =
+  "https://script.google.com/macros/s/AKfycbxEFXwjhCq6Iu8_dNXI1Cc6uZbVAGgaO1nBOY2wpuxZRDx9Fihsycdm16erectNJ7UaDQ/exec";
 const fetchViaProxy = async (url, options) => {
   const _url = encodeURIComponent(url);
   const _options = encodeURIComponent(JSON.stringify(options));
-  const response = await fetch(`${PROXY_BASE_URL}?url=${_url}&options=${_options}`);
+  const response = await fetch(
+    `${PROXY_BASE_URL}?url=${_url}&options=${_options}`
+  );
   if (!response.ok) {
-    throw new Error('fetchViaProxy error: request failure');
+    throw new Error("fetchViaProxy error: request failure");
   }
   const json = await response.json();
-  if (json.status !== 'success') {
+  if (json.status !== "success") {
     throw new Error(`fetchViaProxy error: proxy failure: ${json.content}`);
   }
   return json.content;
-}
+};
 
 export const getYoutubeSubtitleInfo = (id) =>
-  fetchViaProxy(`https://www.youtube.com/watch?v=${id}`, { headers: { 'Accept-Language': 'en-US,en' } })
-  .then(extractSubtitleInfo);
+  fetchViaProxy(`https://www.youtube.com/watch?v=${id}`, {
+    headers: { "Accept-Language": "en-US,en" },
+  }).then(extractSubtitleInfo);
 
 export const getEntries = async (subtitleUrl1, subtitleUrl2) => {
-  const resps = await Promise.all([subtitleUrl1, subtitleUrl2].map(url => fetch(url)));
-  if (!resps.every(r => r.ok)) {
-    throw new Error('Subtitle not found');
+  const resps = await Promise.all(
+    [subtitleUrl1, subtitleUrl2].map((url) => fetch(url))
+  );
+  if (!resps.every((r) => r.ok)) {
+    throw new Error("Subtitle not found");
   }
-  const [ttml1, ttml2] = await Promise.all(resps.map(r => r.text()));
+  const [ttml1, ttml2] = await Promise.all(resps.map((r) => r.text()));
   return createEntries(ttml1, ttml2);
-}
+};
 
 // Do all the steps together
 export const getPlayerDataFromUrl = async (url, lang1, lang2) => {
   const videoId = parseVideoId(url);
   if (!videoId) {
-    throw new Error('Unsupported URL');
+    throw new Error("Unsupported URL");
   }
   let subtitleInfo;
   try {
     subtitleInfo = await getYoutubeSubtitleInfo(videoId);
   } catch (e) {
     console.error(e.message);
-    throw new Error('Unsupported Video');
+    throw new Error("Unsupported Video");
   }
-  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(subtitleInfo, lang1, lang2);
+  const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(
+    subtitleInfo,
+    lang1,
+    lang2
+  );
   let entries;
   try {
     entries = await getEntries(subtitleUrl1, subtitleUrl2);
   } catch (e) {
-    throw new Error('Failed to load subtitles');
+    throw new Error("Failed to load subtitles");
   }
   return { videoId, entries, subtitleInfo, subtitleUrl1, subtitleUrl2 };
-}
+};
 
 export const createEntries = (ttml1, ttml2) => {
   const entries1 = ttmlToEntries(ttml1);
@@ -272,40 +294,42 @@ export const createEntries = (ttml1, ttml2) => {
     id: Math.random(),
     deckId: 0,
     rates: [],
-    ...entry
-  }))
+    ...entry,
+  }));
   return entries;
-}
+};
 
 const ttmlToEntries = (ttml) => {
-  const doc = (new DOMParser()).parseFromString(ttml, 'text/xml');
+  const doc = new DOMParser().parseFromString(ttml, "text/xml");
   // NOTE: Handle subtitle containing "<p ...> ... <br /> ... </p>"
-  Array.from(doc.getElementsByTagName('br')).forEach(br => br.replaceWith(' '));
-  const ps = Array.from(doc.getElementsByTagName('p'));
+  Array.from(doc.getElementsByTagName("br")).forEach((br) =>
+    br.replaceWith(" ")
+  );
+  const ps = Array.from(doc.getElementsByTagName("p"));
   return ps.map((p) => ({
-    begin: timestampToSecond(p.getAttribute('begin')),
-    end: timestampToSecond(p.getAttribute('end')),
+    begin: timestampToSecond(p.getAttribute("begin")),
+    end: timestampToSecond(p.getAttribute("end")),
     text: p.textContent,
   }));
-}
+};
 
 const mergeEntries = (entries1, entries2) => {
   return entries1.map((e1) => {
     const e2 = _.find(entries2, { begin: e1.begin });
     return {
       begin: e1.begin,
-      end:   e1.end,
+      end: e1.end,
       text1: e1.text,
-      text2: e2 ? e2.text : '',
+      text2: e2 ? e2.text : "",
     };
   });
-}
+};
 
 // e.g. 00:02:04.020 => 2 * 60 + 4 = 124
 export const timestampToSecond = (t) => {
-  const [h, m, s] = t.split(':').map(Number).map(Math.floor);
-  return ((h * 60) + m) * 60 + s;
-}
+  const [h, m, s] = t.split(":").map(Number).map(Math.floor);
+  return (h * 60 + m) * 60 + s;
+};
 
 // e.g. 124 => 00:02:04
 export const secondToTimestamp = (s) => {
@@ -314,5 +338,5 @@ export const secondToTimestamp = (s) => {
   s = s % 60;
   let h = Math.floor(m / 60);
   m = m % 60;
-  return sprintf("%02d:%02d:%02d", h, m, s)
-}
+  return sprintf("%02d:%02d:%02d", h, m, s);
+};

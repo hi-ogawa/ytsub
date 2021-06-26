@@ -1,11 +1,11 @@
-import React from 'react';
-import { createStore, applyMiddleware, bindActionCreators } from 'redux';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import thunk from 'redux-thunk';
-import _ from 'lodash';
-import update from 'immutability-helper';
-import localforage from 'localforage';
-import { Observable } from 'rxjs';
+import React from "react";
+import { createStore, applyMiddleware, bindActionCreators } from "redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import thunk from "redux-thunk";
+import _ from "lodash";
+import update from "immutability-helper";
+import localforage from "localforage";
+import { Observable } from "rxjs";
 
 //
 // Utilities (not specific to our usage)
@@ -13,23 +13,24 @@ import { Observable } from 'rxjs';
 export const getSelector = _.memoize((path) => (S) => _.get(S, path));
 export const useGetSelector = (path) => useSelector(getSelector(path));
 export const useRootState = () => useSelector((S) => S);
-export const useBindedActions = (actions) => bindActionCreators(actions, useDispatch());
+export const useBindedActions = (actions) =>
+  bindActionCreators(actions, useDispatch());
 export const fromStore = (store) => {
-  const observable = new Observable(subscriber => {
+  const observable = new Observable((subscriber) => {
     const unsubscribe = store.subscribe(() => {
       subscriber.next(store.getState());
     });
     return unsubscribe;
   });
   return observable;
-}
+};
 
 //
 // Our State Management
 //
 
-const STORAGE_KEY = 'state-tree';
-const STORAGE_FILTER = ['userData'];
+const STORAGE_KEY = "state-tree";
+const STORAGE_FILTER = ["userData"];
 
 const initialState = {
   playerData: {
@@ -37,7 +38,7 @@ const initialState = {
     subtitleInfo: { tracks: [], translations: [] },
     subtitleUrl1: null,
     subtitleUrl2: null,
-    entries: []
+    entries: [],
   },
   modal: null,
   userData: {
@@ -46,25 +47,25 @@ const initialState = {
     decks: [],
     practiceDecks: [],
     preference: {
-      lang1: 'ru',
-      lang2: 'en',
-    }
+      lang1: "ru",
+      lang2: "en",
+    },
   },
   loadingStorage: true,
-}
+};
 
 // NOTE:
 // `update` (from immutability-helper) itself is our reducer.
 // But redux uses `{ type: 'INIT' }` when `createStore` so `type` needs to be handled
 const reducer = (state, action) => {
-  console.log('[REDUCER]', state, action);
-  return action.type === '$UPDATE' ? update(state, action.command) : state;
-}
+  console.log("[REDUCER]", state, action);
+  return action.type === "$UPDATE" ? update(state, action.command) : state;
+};
 
 const actions = {
   // the rest of actions should use `actions.update` and `actions.merge` as a shortcut
   // but don't forget to wrap as in `D(actions.update(...))`
-  update: (command) => (D, S) => D({ type: '$UPDATE', command }),
+  update: (command) => (D, S) => D({ type: "$UPDATE", command }),
   merge: (next) => (D, S) => D(actions.update({ $merge: next })),
 
   setModal: (modal) => (D, S) => D(actions.merge({ modal })),
@@ -79,10 +80,13 @@ const actions = {
     const stateToPersist = _.pick(S(), STORAGE_FILTER);
     await localforage.setItem(STORAGE_KEY, stateToPersist);
   },
-}
+};
 
 const setupStorage = async (store) => {
-  const { restoreFromStorage, persisteToStorage } = bindActionCreators(actions, store.dispatch);
+  const { restoreFromStorage, persisteToStorage } = bindActionCreators(
+    actions,
+    store.dispatch
+  );
 
   // Restore from storage
   await restoreFromStorage();
@@ -91,7 +95,7 @@ const setupStorage = async (store) => {
   fromStore(store).subscribe(async (state) => {
     await persisteToStorage();
   });
-}
+};
 
 // Convinient shortcut for component
 export const useActions = () => useBindedActions(actions);
@@ -108,4 +112,4 @@ export const createProvider = ({ storage = false, initialCommand = false }) => {
   }
   const _Provider = (props) => <Provider store={store} {...props} />;
   return _Provider;
-}
+};

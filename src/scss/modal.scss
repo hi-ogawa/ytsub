@@ -16,8 +16,12 @@
     animation-fill-mode: forwards;
 
     @keyframes fade-in-keyframes {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
   }
 
@@ -25,8 +29,12 @@
     animation: fade-out-keyframes 0.1s ease-in;
     animation-fill-mode: forwards;
     @keyframes fade-out-keyframes {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
     }
   }
 
@@ -52,7 +60,7 @@
 
       i {
         font-size: 22px;
-        color: $grey-7
+        color: $grey-7;
       }
     }
   }

@@ -1,13 +1,13 @@
-import React, { useRef, useEffect } from 'react';
-import _ from 'lodash';
-import CN from 'classnames';
+import React, { useRef, useEffect } from "react";
+import _ from "lodash";
+import CN from "classnames";
 
-import '../typedef.js';
-import { useGetSelector, useActions } from '../stateDef.js'
-import { Player, secondToTimestamp, stopProp, useUpdate } from '../utils.js'
-import NewVideoForm from './NewVideoForm.js'
-import LanguageSelectForm from './LanguageSelectForm.js';
-import Settings from './Settings.js';
+import "../typedef.js";
+import { useGetSelector, useActions } from "../stateDef.js";
+import { Player, secondToTimestamp, stopProp, useUpdate } from "../utils.js";
+import NewVideoForm from "./NewVideoForm.js";
+import LanguageSelectForm from "./LanguageSelectForm.js";
+import Settings from "./Settings.js";
 
 //
 // Dom Tree (cf. app.scss)
@@ -19,7 +19,7 @@ import Settings from './Settings.js';
 //
 
 const App = () => {
-  const { videoId, entries } = useGetSelector('playerData')
+  const { videoId, entries } = useGetSelector("playerData");
   const { setModal } = useActions();
 
   //
@@ -28,26 +28,34 @@ const App = () => {
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
   const currentEntryRef = useRef(null);
-  const [{ loopingEntries, currentTime, playing, autoScroll }, __, ___, mergeState] = useUpdate({
+  const [
+    { loopingEntries, currentTime, playing, autoScroll },
+    __,
+    ___,
+    mergeState,
+  ] = useUpdate({
     loopingEntries: [],
     currentTime: 0,
     playing: false,
     autoScroll: false,
   });
-  const currentEntry = _.reverse(Array.from(entries)).find(e => e.begin <= currentTime);
+  const currentEntry = _.reverse(Array.from(entries)).find(
+    (e) => e.begin <= currentTime
+  );
 
   //
   // On mount (after render)
   //
   useEffect(() => {
-    const player = playerRef.current = new Player(iframeRef.current, {
+    const player = (playerRef.current = new Player(iframeRef.current, {
       videoId,
-      height: '480', width: '853', // Exact size will be set via css.
+      height: "480",
+      width: "853", // Exact size will be set via css.
       playerVars: {
-        autoplay: '0',
-        start: 0
+        autoplay: "0",
+        start: 0,
       },
-    });
+    }));
 
     player.readyPromise.then(() => {
       // Syncronize state with player
@@ -73,28 +81,30 @@ const App = () => {
     const player = playerRef.current;
     if (player && player.ready) {
       if (loopingEntries.length > 0) {
-        const begin = _.min(loopingEntries.map(e => e.begin));
-        const end = _.max(loopingEntries.map(e => e.end));
+        const begin = _.min(loopingEntries.map((e) => e.begin));
+        const end = _.max(loopingEntries.map((e) => e.end));
         if (currentTime < begin || end < currentTime) {
           player.seekTo(begin);
         }
       }
     }
-  }, [currentTime, loopingEntries])
+  }, [currentTime, loopingEntries]);
 
   //
   // Handle auto scroll
   //
   useEffect(() => {
-    if (!autoScroll || !currentEntry || !currentEntryRef.current) { return; }
+    if (!autoScroll || !currentEntry || !currentEntryRef.current) {
+      return;
+    }
     const child = currentEntryRef.current;
     const parent = child.parentElement;
     const hp = parent.clientHeight;
     const hc = child.clientHeight;
     const op = parent.offsetTop;
     const oc = child.offsetTop;
-    parent.scroll({ top: (oc - op) + hc / 2 - hp / 2, behavior: 'smooth' })
-  }, [autoScroll, currentEntry])
+    parent.scroll({ top: oc - op + hc / 2 - hp / 2, behavior: "smooth" });
+  }, [autoScroll, currentEntry]);
 
   //
   // Callbacks
@@ -116,17 +126,17 @@ const App = () => {
         player.playVideo();
       }
     }
-  }
+  };
 
   const toggleLoopingEntry = (entry) => {
     let nextLoopingEntries;
     if (loopingEntries.includes(entry)) {
-      nextLoopingEntries = _.filter(loopingEntries, e => e !== entry);
+      nextLoopingEntries = _.filter(loopingEntries, (e) => e !== entry);
     } else {
       nextLoopingEntries = _.concat(loopingEntries, [entry]);
     }
     mergeState({ loopingEntries: nextLoopingEntries });
-  }
+  };
 
   //
   // Render
@@ -143,11 +153,11 @@ const App = () => {
       </div>
       <div id="subtitle-and-nav-container">
         <div id="subtitle-container">
-          { entries.map((entry) =>
+          {entries.map((entry) => (
             <div
               key={entry.id}
               onClick={() => togglePlayingEntry(entry)}
-              className={CN('entry', {
+              className={CN("entry", {
                 play: entry === currentEntry && playing,
                 paused: entry === currentEntry && !playing,
                 loop: loopingEntries.includes(entry),
@@ -157,36 +167,49 @@ const App = () => {
             >
               <div className="entry__header">
                 {/* TODO: Not implemented */}
-                { false &&
+                {false && (
                   <div className="log">
-                    { entry.rates.map((rate) =>
-                        <div>{ rate.value }</div>
-                      )}
+                    {entry.rates.map((rate) => (
+                      <div>{rate.value}</div>
+                    ))}
                   </div>
-                }
-                <div className="time">{ secondToTimestamp(entry.begin) } - { secondToTimestamp(entry.end) }</div>
+                )}
+                <div className="time">
+                  {secondToTimestamp(entry.begin)} -{" "}
+                  {secondToTimestamp(entry.end)}
+                </div>
                 {/* TODO: Not implemented */}
-                { false &&
+                {false && (
                   <div className="rate">
                     <i className="material-icons">edit</i>
                   </div>
-                }
-                <div onClick={stopProp(() => toggleLoopingEntry(entry))} className="loop">
+                )}
+                <div
+                  onClick={stopProp(() => toggleLoopingEntry(entry))}
+                  className="loop"
+                >
                   <i className="material-icons">repeat</i>
                 </div>
-                <div onClick={stopProp(() => togglePlayingEntry(entry))} className="play">
+                <div
+                  onClick={stopProp(() => togglePlayingEntry(entry))}
+                  className="play"
+                >
                   <i className="material-icons">play_circle_outline</i>
                 </div>
               </div>
               <div className="entry__body">
-                <div>{ entry.text1 }</div>
-                <div>{ entry.text2 }</div>
+                <div>{entry.text1}</div>
+                <div>{entry.text2}</div>
               </div>
             </div>
-          )}
+          ))}
         </div>
         <div id="nav">
-          <div onClick={() => setModal(<NewVideoForm {...{ defaultVideoId: null }} />)}>
+          <div
+            onClick={() =>
+              setModal(<NewVideoForm {...{ defaultVideoId: null }} />)
+            }
+          >
             <i className="material-icons">search</i>
           </div>
           <div
@@ -198,13 +221,16 @@ const App = () => {
           <div onClick={() => setModal(<Settings />)}>
             <i className="material-icons">settings</i>
           </div>
-          <div className={CN({enabled: autoScroll})} onClick={() => mergeState({ autoScroll: !autoScroll })}>
+          <div
+            className={CN({ enabled: autoScroll })}
+            onClick={() => mergeState({ autoScroll: !autoScroll })}
+          >
             <i className="material-icons">double_arrow</i>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;

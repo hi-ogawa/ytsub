@@ -6,7 +6,8 @@
     "deploy": "cd build && cp -rf ../.vercel ../vercel.json . && vercel deploy",
     "demo": "serve build",
     "build:deploy": "npm run build && npm run deploy",
-    "build:demo": "npm run build && npm run demo"
+    "build:demo": "npm run build && npm run demo",
+    "format": "prettier --write . --ignore-path .gitignore"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
@@ -31,5 +32,8 @@
     "style-loader": "^1.0.0",
     "vercel": "^23.0.1",
     "webpack-cli": "^3.3.9"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.1"
   }
 }
