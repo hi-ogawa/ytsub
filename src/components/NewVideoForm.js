@@ -58,7 +58,12 @@ const NewVideoForm = ({ defaultVideoId }) => {
       <div className='video-input'>
         <label>Youtube Video</label>
         <div className='input-grp'>
-          <input value={state.videoId} onChange={(e) => mergeState({ videoId: e.target.value })} placeholder='URL or ID'/>
+          <input
+            value={state.videoId}
+            onChange={(e) => mergeState({ videoId: e.target.value })}
+            onKeyUp={(e) => e.key === "Enter" && videoInputHandler()}
+            placeholder='URL or ID'
+          />
           <button onClick={videoInputHandler} className={CN({ loading: loading1 })}>
             <i className="material-icons">search</i>
           </button>
