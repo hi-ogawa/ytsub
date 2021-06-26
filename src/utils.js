@@ -202,7 +202,7 @@ const extractPlayerResponse = (content) => {
   return JSON.parse(match[1]);
 };
 
-const extractSubtitleInfo = (content) => {
+export const extractSubtitleInfo = (content) => {
   const player_response = extractPlayerResponse(content);
   let tracks =
     player_response.captions.playerCaptionsTracklistRenderer.captionTracks;

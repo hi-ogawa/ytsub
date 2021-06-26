@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useGetSelector, useActions } from "../stateDef.js";
-import { translations as languages } from "../fixtures/subtitleInfo.json";
+import translationLanguages from "../fixtures/translationLanguages.json";
 
 const Settings = () => {
   const { lang1, lang2 } = useGetSelector("userData.preference");
@@ -23,11 +23,13 @@ const Settings = () => {
           <option value="default" disabled>
             -- 1st Language --
           </option>
-          {languages.map(({ name, code }) => (
-            <option key={code} value={code}>
-              {name}
-            </option>
-          ))}
+          {translationLanguages.map(
+            ({ languageCode, languageName: { simpleText } }) => (
+              <option key={languageCode} value={languageCode}>
+                {simpleText}
+              </option>
+            )
+          )}
         </select>
 
         <select
@@ -37,11 +39,13 @@ const Settings = () => {
           <option value="default" disabled>
             -- 2nd Language --
           </option>
-          {languages.map(({ name, code }) => (
-            <option key={code} value={code}>
-              {name}
-            </option>
-          ))}
+          {translationLanguages.map(
+            ({ languageCode, languageName: { simpleText } }) => (
+              <option key={languageCode} value={languageCode}>
+                {simpleText}
+              </option>
+            )
+          )}
         </select>
       </div>
     </div>

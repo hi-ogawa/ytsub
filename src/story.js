@@ -150,11 +150,12 @@ storiesOf("NewVideoForm", module)
 // LanguageSelectForm
 //
 import LanguageSelectForm from "./components/LanguageSelectForm.js";
-import { findPreferredSubtitles } from "./utils.js";
+import { findPreferredSubtitles, extractSubtitleInfo } from "./utils.js";
 
 storiesOf(LanguageSelectForm.name, module).add("With Data", () => {
   // NOTE: this data is old one so the subtitle urls are invalid now.
-  const subtitleInfo = require("./fixtures/subtitleInfo.json");
+  const exampleHtml = require("raw-loader!./fixtures/example.html").default;
+  const subtitleInfo = extractSubtitleInfo(exampleHtml);
   const { subtitleUrl1, subtitleUrl2 } = findPreferredSubtitles(
     subtitleInfo,
     "ru",

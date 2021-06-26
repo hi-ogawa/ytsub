@@ -1,0 +1,3 @@
+build
+src/fixtures/*.html
+src/fixtures/*.json
