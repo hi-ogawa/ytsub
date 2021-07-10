@@ -4,7 +4,13 @@ import CN from "classnames";
 
 import "../typedef.js";
 import { useGetSelector, useActions } from "../stateDef.js";
-import { Player, secondToTimestamp, stopProp, useUpdate } from "../utils.js";
+import {
+  Player,
+  secondToTimestamp,
+  stopProp,
+  useUpdate,
+  squashWhitespace,
+} from "../utils.js";
 import NewVideoForm from "./NewVideoForm.js";
 import LanguageSelectForm from "./LanguageSelectForm.js";
 import Settings from "./Settings.js";
@@ -196,7 +202,11 @@ const App = () => {
                     method="POST"
                     action="https://www.keyhero.com/custom-typing-test/"
                   >
-                    <input type="hidden" name="text" value={entry.text1} />
+                    <input
+                      type="hidden"
+                      name="text"
+                      value={squashWhitespace(entry.text1)}
+                    />
                   </form>
                 </div>
                 <div

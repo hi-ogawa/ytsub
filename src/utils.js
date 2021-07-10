@@ -340,3 +340,7 @@ export const secondToTimestamp = (s) => {
   m = m % 60;
   return sprintf("%02d:%02d:%02d", h, m, s);
 };
+
+export const squashWhitespace = (text) => {
+  return text.split(/\s+/).join(" ");
+};
