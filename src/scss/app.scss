@@ -152,7 +152,8 @@
 
     .rate,
     .loop,
-    .play {
+    .play,
+    .typing-test {
       position: relative;
       top: 1px;
       padding-left: 6px;
@@ -162,6 +163,10 @@
       i {
         font-size: 16px;
       }
+    }
+
+    .typing-test {
+      color: $grey-6;
     }
   }
 
