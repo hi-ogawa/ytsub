@@ -185,6 +185,21 @@ const App = () => {
                   </div>
                 )}
                 <div
+                  onClick={stopProp((e) =>
+                    e.currentTarget.querySelector("form").submit()
+                  )}
+                  className="typing-test"
+                >
+                  <i className="material-icons">keyboard</i>
+                  <form
+                    target="_blank"
+                    method="POST"
+                    action="https://www.keyhero.com/custom-typing-test/"
+                  >
+                    <input type="hidden" name="text" value={entry.text1} />
+                  </form>
+                </div>
+                <div
                   onClick={stopProp(() => toggleLoopingEntry(entry))}
                   className="loop"
                 >
